@@ -1,11 +1,15 @@
 /** Express application instance – exported for testing. */
 import express, { type NextFunction, type Request, type Response } from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import { healthRouter } from './routes/health';
 import { todoRouter } from './routes/todos';
 
 const app = express();
 app.disable('x-powered-by');
+
+// Security headers (X-Content-Type-Options, Referrer-Policy, X-Frame-Options, …)
+app.use(helmet({ referrerPolicy: { policy: 'no-referrer' } }));
 
 // CORS – allowed origins from CORS_ORIGIN (comma-separated).
 // Empty/unset = allow all (dev convenience). Evaluated per request.
