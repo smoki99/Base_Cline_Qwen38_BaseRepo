@@ -55,19 +55,66 @@ npm run test:e2e -w web
 
 ## 6. Git & Commits
 
-- **Conventional Commits**: `type(scope): subject`
-  - Typen: `feat`, `fix`, `chore`, `refactor`, `docs`, `test`, `perf`
-  - Scope: optional – `(api)`, `(web)`, `(shared)`
-  - Subject: kurz, aktiv, **deutsch**, max. ~70 Zeichen
+### Commit-Format
+
+```
+Story-XXXX: <type>(<scope>): <kurzes deutsches Subject>
+```
+
+- **Story-Referenz IMMER am Anfang** – ermöglicht
+  `git log --grep="Story-0014"` für die vollständige Story-Historie.
+- Typen: `feat`, `fix`, `chore`, `refactor`, `docs`, `test`, `perf`
+- Scope: optional – `(api)`, `(web)`, `(shared)`
+- Subject: kurz, aktiv, **deutsch**, max. ~70 Zeichen
 - Body (optional): nur bei nicht selbst-erklärenden Änderungen, Zeilen max. ~100 Zeichen.
-- Beispiele:
-  - `feat(api): todo-Validierung für POST und PATCH hinzufügen`
-  - `fix(shared): build-Script als No-Op für CI-Workspace-Loop ergänzen`
-  - `chore: ESLint-Config auf flat config migrieren`
+
+Beispiele:
+
+```
+Story-0014: refactor(web): Web in lib/api + useTodos-Hook trennen
+Story-0011: feat(api): Coverage-Schwellwert einrichten
+fix(api): CORS-Origin-Liste für Produktion ergänzen   ← ohne Story
+```
+
+### PR-Workflow
+
 - **NIE direkt auf `master` pushen.** Änderungen gehen ausschließlich über einen Pull Request.
-  - Workflow: `feature/…`-Branch → Commits → `git push origin <branch>` → PR → CI grün → Merge.
-  - Am Ende einer Aufgabe: Branch pushen und **„fertig, bereit für PR"** melden.
-  - Kein `git checkout master && git merge …` ohne explizite Freigabe.
+- **NIE selbst einen Pull Request erstellen** (kein `gh pr create`).
+- **NIE selbst mergen** – der Mensch entscheidet.
+
+**Vollständiger Workflow:**
+
+| Schritt                                     | Wer             |
+| ------------------------------------------- | --------------- |
+| Feature-Branch + Commits                    | KI              |
+| Branch pushen                               | KI              |
+| PR erstellen                                | **Mensch**      |
+| **Externes LLM-Review** (außerhalb VS Code) | **Mensch**      |
+| CI grün                                     | automatisch     |
+| Feedback einarbeiten                        | KI              |
+| Merge + Issue schließen                     | **Mensch** + KI |
+
+**Merge-Kriterien (alle Pflicht):**
+
+1. CI grün (typecheck + lint + test + build + e2e)
+2. **Externes LLM-Review** durchgeführt – ein anderes LLM (z. B. Claude, ChatGPT)
+   reviewed den PR-Diff **außerhalb** des aktuellen Cline-/VS-Code-Kontexts.
+   Zweite unabhängige Perspektive; fängt Bias und Blindstellen.
+3. LLM-Feedback eingearbeitet (neuer Commit, CI erneut grün)
+4. Menschliche Freigabe
+
+### Externes LLM-Review – Ablauf
+
+```bash
+# 1. Diff exportieren
+gh pr diff <PR-Nummer> > /tmp/pr-diff.txt
+
+# 2. In externes LLM einfügen (Claude, ChatGPT, etc.)
+#    Prompt: "Review diesen Diff: Edge Cases, Security, Typsicherheit, Architektur."
+
+# 3. Feedback als PR-Kommentar einfügen
+# 4. KI arbeitet Feedback ein → neuer Commit → CI erneut grün
+```
 
 ## 7. Security & Config
 

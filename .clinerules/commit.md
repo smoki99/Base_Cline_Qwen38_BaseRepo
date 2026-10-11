@@ -8,18 +8,25 @@ um die geänderten Dateien zu verstehen.
 
 Erstelle dann einen Conventional Commit:
 
-- Format: `<type>(<scope>): <kurzes deutsches Subject>`
+**Format:**
+
+```
+Story-XXXX: <type>(<scope>): <kurzes deutsches Subject>
+```
+
+- Story-Referenz IMMER am Anfang (ermöglicht `git log --grep="Story-0014"`)
 - Typen: feat, fix, chore, refactor, docs, test, perf
 - Scope: optional, z. B. `(api)`, `(web)`, `(shared)`
 - Subject: kurz, aktiv, deutsch, max. ~70 Zeichen
 - Body (optional): nur wenn die Änderung nicht selbst-erklärend ist,
   ebenfalls auf Deutsch, Zeilen max. ~100 Zeichen.
 
-Beispiele:
+**Beispiele:**
 
 ```
-feat(api): User-Login-Endpunkt hinzufügen
-fix(shared): ApiResult-Typ auf optionale Felder erweitern
+Story-0014: refactor(web): Web in lib/api + useTodos-Hook trennen
+Story-0011: feat(api): Coverage-Schwellwert einrichten
+fix(api): CORS-Origin-Liste für Produktion ergänzen
 chore: ESLint-Config auf flat config migrieren
 ```
 

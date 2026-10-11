@@ -33,13 +33,29 @@ apps/web = React 19 + Vite (nur UI) · apps/api = Express (REST) · packages/sha
 
 - **Single Source of Truth:** GitHub Issues mit Titel `Story-XXXX: <Thema>`.
   Lokale Story-Markdown-Dateien (`docs/stories/`) werden NICHT mehr verwendet.
-- **Branch-Naming:** `feature/story-XXXX` (z. B. `feature/story-0010`)
-- **Commit-Naming:** Story-Referenz IMMER im Subject:
-  `feat(story-0010): SAST Workflow anlegen`
-  oder: `docs(story-0015): AGENTS.md anlegen`
+- **Branch-Naming:** `feature/<beschreibung>` oder `feature/story-XXXX`
+- **Commit-Naming:** Story-Referenz IMMER am Anfang:
+  `Story-0014: refactor(web): Web in lib/api + useTodos trennen`
+  Ohne Story: `fix(api): CORS-Origin-Liste ergänzen`
 - **PR-Titel:** `Story-XXXX: <kurze Beschreibung>`
 - Vor Beginn: GitHub-Issue öffnen (Status offen)
 - Nach Abschluss: Issue schließen (Status completed)
+
+## PR-Workflow (Pflicht)
+
+- **NIE selbst einen PR erstellen** (kein `gh pr create`).
+- **NIE selbst mergen.**
+- Am Ende einer Aufgabe: Branch pushen und „fertig, bereit für PR" melden
+  inkl. vorgeschlagener PR-Titel und -Body.
+
+**Merge-Kriterien (alle Pflicht):**
+
+1. CI grün
+2. **Externes LLM-Review** – ein anderes LLM (Claude, ChatGPT, etc.) reviewed
+   den PR-Diff **außerhalb** von VS Code / Cline-Kontext. Zweite unabhängige
+   Perspektive; fängt Bias und typische LLM-Blindstellen.
+3. Feedback eingearbeitet (neuer Commit)
+4. Menschliche Freigabe
 
 ## Thinking & Reasoning
 
