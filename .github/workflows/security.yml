@@ -47,17 +47,23 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install gitleaks
+        run: |
+          GITLEAKS_VERSION="8.18.4"
+          curl -sSfL \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar xz
+          sudo mv gitleaks /usr/local/bin/
+          gitleaks version
+
       - name: Run Gitleaks
         run: |
-          docker run --rm \
-            -v "$(pwd):/data" \
-            zricethezra/gitleaks:latest \
-            detect \
-            --source /data \
+          gitleaks detect \
+            --source . \
             --fail \
             --no-banner \
             --report-format json \
-            --report-path /data/gitleaks-report.json \
+            --report-path gitleaks-report.json \
             --verbose
 
       - name: Upload gitleaks report
