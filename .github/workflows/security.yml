@@ -1,0 +1,70 @@
+name: Security
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  codeql:
+    name: CodeQL (JS/TS)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript-typescript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+
+  gitleaks:
+    name: Gitleaks (Secret Scanning)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        run: |
+          docker run --rm \
+            -v "$(pwd):/data" \
+            zricethezra/gitleaks:latest \
+            detect \
+            --source /data \
+            --fail \
+            --no-banner \
+            --report-format json \
+            --report-path /data/gitleaks-report.json \
+            --verbose
+
+      - name: Upload gitleaks report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: gitleaks-report
+          path: gitleaks-report.json
+          retention-days: 30
+          if-no-files-found: warn
