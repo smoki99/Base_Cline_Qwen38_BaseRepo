@@ -118,6 +118,18 @@ Danach:
 | `npm run verify:lockfile`  | Alle installierten Pakete gegen lockfile verifizieren                            |
 | `npm run format`           | Prettier formatiert den Code                                                     |
 
+## API
+
+| Method   | Path             | Beschreibung       |
+| -------- | ---------------- | ------------------ |
+| `GET`    | `/health`        | Liveness-Check     |
+| `GET`    | `/api/todos`     | Alle Todos abrufen |
+| `POST`   | `/api/todos`     | Neues Todo anlegen |
+| `PATCH`  | `/api/todos/:id` | Todo aktualisieren |
+| `DELETE` | `/api/todos/:id` | Todo löschen       |
+
+→ Vollständige Doku mit Request/Response-Beispielen: [`docs/API.md`](./docs/API.md)
+
 ## Tests
 
 - **Unit (Vitest):** `npm test`
