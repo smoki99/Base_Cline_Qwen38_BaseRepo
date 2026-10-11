@@ -29,7 +29,7 @@ getestet (Unit + E2E) und CI- grün.
 | 13  | Security-Header (helmet)                                    | ⬜     |
 | 14  | Rate-Limiting                                               | ⬜     |
 | 15  | Fail-Closed CORS (Production)                               | ⬜     |
-| 16  | CI: Least Privilege + Timeout + Concurrency                 | 🔄     |
+| 16  | CI: Least Privilege + Timeout + Concurrency                 | ✅     |
 | 17  | AGENTS.md (agent-agnostisch)                                | ⬜     |
 | 18  | `npm run check` (ein Befehl)                                | ⬜     |
 | 19  | Validierungs-Schemas (zod) in shared                        | ⬜     |
@@ -49,7 +49,7 @@ getestet (Unit + E2E) und CI- grün.
 | [0007](stories/Story-0007.md)      | Security-Header (helmet)                    | High      | ⬜     |
 | [0008](stories/Story-0008.md)      | Rate-Limiting                               | High      | ⬜     |
 | [0009](stories/Story-0009.md)      | Fail-Closed CORS (Production)               | High      | ⬜     |
-| [0010](stories/Story-0010.md)      | CI: Least Privilege + Timeout + Concurrency | High      | 🔄     |
+| [0010](stories/Story-0010.md)      | CI: Least Privilege + Timeout + Concurrency | High      | ✅     |
 | [0011](stories/Story-0011.md)      | AGENTS.md (agent-agnostisch)                | High      | ⬜     |
 | [0012](stories/Story-0012.md)      | `npm run check` (ein Befehl)                | High      | ⬜     |
 | [0013](stories/Story-0013.md)      | Validierungs-Schemas (zod) in shared        | Medium    | ⬜     |

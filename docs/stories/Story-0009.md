@@ -1,6 +1,6 @@
 # Story-0009: CI – timeout-minutes + concurrency
 
-**Status:** 🔄 in Arbeit
+**Status:** ✅ fertig
 **Priority:** High
 **Bereich:** `.github/workflows/ci.yml`
 **Phase:** 2 – CI-Hygiene
