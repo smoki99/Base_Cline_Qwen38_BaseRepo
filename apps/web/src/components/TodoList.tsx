@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { isApiError } from 'shared';
-import type { ApiResult, CreateTodo, Todo, UpdateTodo } from 'shared';
+import { useRef, useState } from 'react';
+import { useTodos } from '../hooks/useTodos';
 
 interface Toast {
   message: string;
@@ -8,14 +7,10 @@ interface Toast {
 }
 
 export default function TodoList() {
-  const apiBase = import.meta.env.VITE_API_URL ?? '';
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { todos, loading, error, reload, addTodo, toggleTodo, deleteTodo } = useTodos();
   const [title, setTitle] = useState('');
   const [toast, setToast] = useState<Toast | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const inflightToggles = useRef<Set<number>>(new Set());
 
   function showToast(message: string, type: Toast['type']) {
     if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -23,80 +18,20 @@ export default function TodoList() {
     toastTimer.current = setTimeout(() => setToast(null), 2500);
   }
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(`${apiBase}/api/todos`);
-      const json = (await res.json()) as ApiResult<Todo[]>;
-      if (isApiError(json)) throw new Error(json.error.message);
-      if (!res.ok || !Array.isArray(json.data))
-        throw new Error(`Request failed with status ${res.status}`);
-      setTodos(json.data);
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  }, [apiBase]);
-
-  useEffect(() => {
-    void load();
-    return () => {
-      if (toastTimer.current) clearTimeout(toastTimer.current);
-    };
-  }, [load]);
-
   async function handleAdd() {
     const trimmed = title.trim();
     if (!trimmed) return;
-    try {
-      const body: CreateTodo = { title: trimmed };
-      const res = await fetch(`${apiBase}/api/todos`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      const json = (await res.json()) as ApiResult<Todo>;
-      if (isApiError(json)) throw new Error(json.error.message);
-      if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
-      setTodos((prev) => [...prev, json.data]);
+    const result = await addTodo(trimmed);
+    if (result) {
       setTitle('');
       showToast('Todo hinzugefügt', 'success');
-    } catch (err) {
-      setError((err as Error).message);
     }
   }
 
-  async function handleToggle(todo: Todo) {
-    if (inflightToggles.current.has(todo.id)) return;
-    const previous = todo.done;
-    const payload: UpdateTodo = { done: !previous };
-    setTodos((prev) => prev.map((t) => (t.id === todo.id ? { ...t, done: !previous } : t)));
-    inflightToggles.current.add(todo.id);
-    try {
-      const res = await fetch(`${apiBase}/api/todos/${todo.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
-    } catch (err) {
-      setTodos((prev) => prev.map((t) => (t.id === todo.id ? { ...t, done: previous } : t)));
-      setError((err as Error).message);
-    } finally {
-      inflightToggles.current.delete(todo.id);
-    }
-  }
-
-  async function handleDelete(todo: Todo) {
-    try {
-      const res = await fetch(`${apiBase}/api/todos/${todo.id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
-      setTodos((prev) => prev.filter((t) => t.id !== todo.id));
+  async function handleDelete(todo: Parameters<typeof deleteTodo>[0]) {
+    const success = await deleteTodo(todo);
+    if (success) {
       showToast('Todo gelöscht', 'success');
-    } catch (err) {
-      setError((err as Error).message);
     }
   }
 
@@ -122,7 +57,7 @@ export default function TodoList() {
       <div className="error-state text-center" data-testid="error-state" role="alert">
         <div className="error-icon">⚠️</div>
         <p className="mb-2">{error}</p>
-        <button type="button" className="btn btn-primary btn-sm" onClick={() => void load()}>
+        <button type="button" className="btn btn-primary btn-sm" onClick={() => void reload()}>
           Erneut versuchen
         </button>
       </div>
@@ -144,7 +79,7 @@ export default function TodoList() {
           <button
             type="button"
             className="btn btn-sm btn-outline-danger ms-auto"
-            onClick={() => void load()}
+            onClick={() => void reload()}
           >
             Retry
           </button>
@@ -189,7 +124,7 @@ export default function TodoList() {
                 className="form-check-input"
                 checked={todo.done}
                 aria-label={`Toggle ${todo.title}`}
-                onChange={() => void handleToggle(todo)}
+                onChange={() => void toggleTodo(todo)}
               />
               <span className={todo.done ? 'todo-title done' : 'todo-title'}>{todo.title}</span>
               <button
