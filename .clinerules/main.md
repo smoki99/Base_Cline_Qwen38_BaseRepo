@@ -17,8 +17,10 @@ apps/web = React 19 + Vite (nur UI) · apps/api = Express (REST) · packages/sha
 7. Bei Unsicherheit: Frage stellen statt raten.
 8. Git: Conventional Commits (feat:, fix:, chore:), kurzer deutscher Subject.
    **NIE direkt auf `master` pushen.** Änderungen gehen über einen Pull Request.
-   Workflow: Feature-Branch → Commit → Push Branch → PR erstellen → CI grün → Merge.
-   Am Ende einer Aufgabe: Branch pushen und „fertig, bereit für PR" melden.
+   Workflow: Feature-Branch → Commit → Push Branch → **Mensch erstellt PR** → CI grün → Merge.
+   **NIE selbst einen Pull Request erstellen** (kein `gh pr create`).
+   Am Ende einer Aufgabe: Branch pushen und „fertig, bereit für PR" melden
+   inkl. vorgeschlagener PR-Titel und -Body, damit der Mensch sie nur noch einfügen muss.
 9. Vor dem ersten Commit in einem neuen Feature-Branch:
    `.github/workflows/ci.yml` LESEN und sicherstellen, dass alle CI-Schritte
    lokal abgedeckt sind (mind. die vier Pflicht-Checks aus Regel 5).
