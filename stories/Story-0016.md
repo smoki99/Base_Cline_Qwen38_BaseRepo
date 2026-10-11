@@ -16,7 +16,7 @@ neuer Code getestet wird.
 
 - [ ] `apps/server`: `@vitest/coverage-v8` in DevDeps; `vitest.config.ts`
       mit `coverage: { provider: 'v8', thresholds: { lines: 80, functions: 80,
-      branches: 75, statements: 80 } }`
+branches: 75, statements: 80 } }`
 - [ ] `apps/web`: dito (inkl. `useTodos`, `lib/api`)
 - [ ] `npm run test -- --coverage` zeigt den Report; Abbruch unterhalb
       Schwellwert

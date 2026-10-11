@@ -16,13 +16,18 @@ app.use(
         .split(',')
         .map((s) => s.trim())
         .filter(Boolean);
-      if (origin === undefined || origin === '' || allowed.length === 0 || allowed.includes(origin)) {
+      if (
+        origin === undefined ||
+        origin === '' ||
+        allowed.length === 0 ||
+        allowed.includes(origin)
+      ) {
         callback(null, true);
       } else {
         callback(Object.assign(new Error('Not allowed by CORS'), { status: 403 }));
       }
     },
-  }),
+  })
 );
 
 app.use(express.json());

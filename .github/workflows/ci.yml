@@ -28,6 +28,9 @@ jobs:
       - name: Check for unexpected packages
         run: node scripts/verify-lockfile.cjs
 
+      - name: Format
+        run: npm run format:check
+
       - run: npm run typecheck
       - run: npm run lint
       - run: npx knip

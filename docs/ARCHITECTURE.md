@@ -98,27 +98,27 @@ dieses Format und werden in der Web-App zur Typisierung der Fetch-Antworten verw
 
 ## apps/api – Struktur
 
-| Verzeichnis | Zweck |
-|-------------|-------|
-| `src/routes/` | HTTP-Endpunkte: Routing, Request/Response, Validierung |
-| `src/services/` | Business-Logik: rein, ohne HTTP-Abhängigkeiten |
-| `src/app.ts` | Express-App-Instanz (export für Tests) |
-| `src/index.ts` | Server-Start (`app.listen`) |
-| `src/__tests__/` | Integrationstests (Vitest + Supertest) |
+| Verzeichnis      | Zweck                                                  |
+| ---------------- | ------------------------------------------------------ |
+| `src/routes/`    | HTTP-Endpunkte: Routing, Request/Response, Validierung |
+| `src/services/`  | Business-Logik: rein, ohne HTTP-Abhängigkeiten         |
+| `src/app.ts`     | Express-App-Instanz (export für Tests)                 |
+| `src/index.ts`   | Server-Start (`app.listen`)                            |
+| `src/__tests__/` | Integrationstests (Vitest + Supertest)                 |
 
 ## apps/web – Struktur
 
-| Verzeichnis/Datei | Zweck |
-|-------------------|-------|
-| `src/components/` | React-Komponenten |
-| `src/__tests__/` | Komponenten-Tests (Vitest + React Testing Library) |
-| `src/test/setup.ts` | Test-Setup (`@testing-library/jest-dom`) |
-| `src/main.tsx` | React Entry Point |
-| `src/index.css` | Material Design 3 CSS (Bootstrap + MD3-Tokens) |
-| `e2e/` | Playwright-E2E-Tests (headless Chromium) |
-| `playwright.config.ts` | E2E-Konfiguration (webServer startet API + Web) |
-| `vite.config.ts` | Vite-Plugin, Dev-Proxy, Vitest-Config |
-| `index.html` | Vite HTML-Entry |
+| Verzeichnis/Datei      | Zweck                                              |
+| ---------------------- | -------------------------------------------------- |
+| `src/components/`      | React-Komponenten                                  |
+| `src/__tests__/`       | Komponenten-Tests (Vitest + React Testing Library) |
+| `src/test/setup.ts`    | Test-Setup (`@testing-library/jest-dom`)           |
+| `src/main.tsx`         | React Entry Point                                  |
+| `src/index.css`        | Material Design 3 CSS (Bootstrap + MD3-Tokens)     |
+| `e2e/`                 | Playwright-E2E-Tests (headless Chromium)           |
+| `playwright.config.ts` | E2E-Konfiguration (webServer startet API + Web)    |
+| `vite.config.ts`       | Vite-Plugin, Dev-Proxy, Vitest-Config              |
+| `index.html`           | Vite HTML-Entry                                    |
 
 ### Dev-Proxy
 
@@ -175,6 +175,7 @@ server {
    Duplizierung von Typen/DTOs ist verboten.
 
 2. **API-Antwortformat** ist strikt:
+
    ```json
    { "data": ... }
    { "error": { "message": "..." } }

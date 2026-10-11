@@ -36,7 +36,7 @@ getestet (Unit + E2E) und CI- grün.
 | 20  | Express 4 → 5                                               | ✅     |
 | 21  | Web: `lib/api.ts` + `useTodos`-Hook                         | ⬜     |
 | 22  | Vitest-Coverage mit Schwellwert                             | ⬜     |
-| 23  | Prettier-Check in CI                                        | ⬜     |
+| 23  | Prettier-Check in CI                                        | ✅     |
 | 24  | SAST + Secret-Scanning (CodeQL + gitleaks)                  | ⬜     |
 | 25  | DoD + Guardrails in Agent-Regeln                            | ⬜     |
 | 26  | API-Vertrag als `docs/API.md`                               | ⬜     |
@@ -56,7 +56,7 @@ getestet (Unit + E2E) und CI- grün.
 | [0007](docs/stories/Story-0007.md) | Express 4 → 5                               | Medium    | ✅     |
 | [0015](stories/Story-0015.md)      | Web: `lib/api.ts` + `useTodos`-Hook         | Medium    | ⬜     |
 | [0016](stories/Story-0016.md)      | Vitest-Coverage mit Schwellwert             | Medium    | ⬜     |
-| [0017](stories/Story-0017.md)      | Prettier-Check in CI                        | Medium    | ⬜     |
+| [0008](docs/stories/Story-0008.md) | Prettier-Check in CI                        | Medium    | ✅     |
 | [0018](stories/Story-0018.md)      | SAST + Secret-Scanning (CodeQL + gitleaks)  | Medium    | ⬜     |
 | [0019](stories/Story-0019.md)      | DoD + Guardrails in Agent-Regeln            | Medium    | ⬜     |
 | [0020](stories/Story-0020.md)      | API-Vertrag als `docs/API.md`               | Medium    | ⬜     |

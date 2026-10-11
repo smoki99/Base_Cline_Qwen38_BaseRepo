@@ -10,12 +10,17 @@
 
 body {
   margin: 0;
-  font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+  font-family:
+    'Roboto',
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Arial,
+    sans-serif;
   color: var(--md-on-surface);
   background:
     radial-gradient(1200px 600px at 100% -10%, #eaddff 0%, transparent 60%),
-    radial-gradient(1000px 500px at -10% 10%, #d7f0ff 0%, transparent 55%),
-    #eef0f5;
+    radial-gradient(1000px 500px at -10% 10%, #d7f0ff 0%, transparent 55%), #eef0f5;
   min-height: 100vh;
 }
 
@@ -97,8 +102,13 @@ body {
 
 /* --- Skeleton Loading --- */
 @keyframes skeleton-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .skeleton-container {
@@ -139,8 +149,14 @@ body {
 
 /* --- Material Toast --- */
 @keyframes toast-in {
-  from { transform: translateY(16px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .toast-md {

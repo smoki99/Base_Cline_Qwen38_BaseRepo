@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-const fs = require('fs'), path = require('path');
+const fs = require('fs'),
+  path = require('path');
 const lock = require('../package-lock.json');
 const lockNames = new Set(
   Object.keys(lock.packages)
-    .filter(k => k.startsWith('node_modules/'))
-    .map(k => k.substring(k.lastIndexOf('node_modules/') + 13))
+    .filter((k) => k.startsWith('node_modules/'))
+    .map((k) => k.substring(k.lastIndexOf('node_modules/') + 13))
 );
 function walk(dir, found) {
   if (!fs.existsSync(dir)) return;
@@ -28,7 +29,7 @@ function walk(dir, found) {
 const projectRoot = path.resolve(__dirname, '..');
 const installed = new Set();
 walk(path.join(projectRoot, 'node_modules'), installed);
-const unexpected = [...installed].filter(n => !lockNames.has(n));
+const unexpected = [...installed].filter((n) => !lockNames.has(n));
 if (unexpected.length) {
   console.error('Unexpected packages in node_modules:', unexpected.join(', '));
   process.exit(1);

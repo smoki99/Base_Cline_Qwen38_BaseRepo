@@ -12,23 +12,23 @@ getestet (Unit + E2E) und CI- grün.
 
 ## Plan (Etappen)
 
-| # | Etappe | Status |
-|---|--------|--------|
-| 1 | Progress-Datei anlegen | ✅ |
-| 2 | Bootstrap (v5) im Web-Workspace installieren | ✅ |
-| 3 | Shared-DTOs (`CreateTodo` / `UpdateTodo`) | ✅ |
-| 4 | API: CRUD-Endpunkte (POST / PATCH / DELETE) | ✅ |
-| 5 | API-Tests (Vitest + Supertest) | ✅ |
-| 6 | Web: Bootstrap-Import + Material-Design-CSS | ✅ |
-| 7 | Web: interaktive `TodoList` (Add / Toggle / Delete) | ✅ |
-| 8 | Web-Unit-Tests (RTL) | ✅ |
-| 9 | E2E: Baseline (Playwright) – Interaktionen per RTL-Tests | ✅ |
-| 10 | Docs: README + DECISIONS + `.vscode` aufräumen | ✅ |
-| 11 | Full-Chain (typecheck/lint/test/e2e) + Commit | ✅ |
-| 12 | UX: Skeleton-Loading, Empty-State, Error-State mit Retry | ✅ |
-| 13 | UX: Material-Toast (Erfolg/Fehler) | ✅ |
-| 14 | Web-Tests: neue States (Skeleton, Empty, Error, Toast, Retry) | ✅ |
-| 15 | Full-Chain final (typecheck/lint/test/e2e) | ✅ |
+| #   | Etappe                                                        | Status |
+| --- | ------------------------------------------------------------- | ------ |
+| 1   | Progress-Datei anlegen                                        | ✅     |
+| 2   | Bootstrap (v5) im Web-Workspace installieren                  | ✅     |
+| 3   | Shared-DTOs (`CreateTodo` / `UpdateTodo`)                     | ✅     |
+| 4   | API: CRUD-Endpunkte (POST / PATCH / DELETE)                   | ✅     |
+| 5   | API-Tests (Vitest + Supertest)                                | ✅     |
+| 6   | Web: Bootstrap-Import + Material-Design-CSS                   | ✅     |
+| 7   | Web: interaktive `TodoList` (Add / Toggle / Delete)           | ✅     |
+| 8   | Web-Unit-Tests (RTL)                                          | ✅     |
+| 9   | E2E: Baseline (Playwright) – Interaktionen per RTL-Tests      | ✅     |
+| 10  | Docs: README + DECISIONS + `.vscode` aufräumen                | ✅     |
+| 11  | Full-Chain (typecheck/lint/test/e2e) + Commit                 | ✅     |
+| 12  | UX: Skeleton-Loading, Empty-State, Error-State mit Retry      | ✅     |
+| 13  | UX: Material-Toast (Erfolg/Fehler)                            | ✅     |
+| 14  | Web-Tests: neue States (Skeleton, Empty, Error, Toast, Retry) | ✅     |
+| 15  | Full-Chain final (typecheck/lint/test/e2e)                    | ✅     |
 
 ## Changelog
 

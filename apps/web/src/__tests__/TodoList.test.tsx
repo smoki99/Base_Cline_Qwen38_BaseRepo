@@ -40,7 +40,7 @@ describe('TodoList', () => {
         ok: false,
         status: 500,
         json: () => Promise.resolve({ error: { message: 'Something went wrong' } }),
-      }),
+      })
     );
 
     render(<TodoList />);
@@ -57,7 +57,7 @@ describe('TodoList', () => {
   it('shows a status-based error state with retry button when response is not ok (regression)', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue({ ok: false, status: 503, json: () => Promise.resolve({}) }),
+      vi.fn().mockResolvedValue({ ok: false, status: 503, json: () => Promise.resolve({}) })
     );
 
     render(<TodoList />);
@@ -75,7 +75,12 @@ describe('TodoList', () => {
     let resolveFetch!: (value: unknown) => void;
     vi.stubGlobal(
       'fetch',
-      vi.fn(() => new Promise((resolve) => { resolveFetch = resolve; })),
+      vi.fn(
+        () =>
+          new Promise((resolve) => {
+            resolveFetch = resolve;
+          })
+      )
     );
 
     const { container } = render(<TodoList />);
@@ -110,7 +115,7 @@ describe('TodoList', () => {
       vi.fn(async (_input: unknown, init?: RequestInit) => {
         if (init?.method === 'POST') return ok({ data: created }, 201);
         return ok({ data: mockTodos });
-      }),
+      })
     );
 
     render(<TodoList />);
@@ -129,9 +134,10 @@ describe('TodoList', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn(async (_input: unknown, init?: RequestInit) => {
-        if (init?.method === 'DELETE') return { ok: true, status: 204, json: () => Promise.resolve({}) };
+        if (init?.method === 'DELETE')
+          return { ok: true, status: 204, json: () => Promise.resolve({}) };
         return ok({ data: mockTodos });
-      }),
+      })
     );
 
     render(<TodoList />);
@@ -178,7 +184,7 @@ describe('TodoList', () => {
       vi.fn(async (_input: unknown, init?: RequestInit) => {
         if (init?.method === 'POST') return ok({ data: created }, 201);
         return ok({ data: mockTodos });
-      }),
+      })
     );
 
     render(<TodoList />);
@@ -209,7 +215,7 @@ describe('TodoList', () => {
     await waitFor(() => expect(checkbox).toBeChecked());
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining('/api/todos/2'),
-      expect.objectContaining({ method: 'PATCH' }),
+      expect.objectContaining({ method: 'PATCH' })
     );
   });
 
@@ -218,7 +224,9 @@ describe('TodoList', () => {
     let resolvePatch!: (value: unknown) => void;
     const fetchMock = vi.fn(((_input: unknown, init?: RequestInit) => {
       if (init?.method === 'PATCH') {
-        return new Promise((resolve) => { resolvePatch = resolve; });
+        return new Promise((resolve) => {
+          resolvePatch = resolve;
+        });
       }
       return Promise.resolve(ok({ data: [item] }));
     }) as unknown as typeof fetch);
@@ -241,7 +249,11 @@ describe('TodoList', () => {
     const item = { id: 1, title: 'Test', done: false };
     const fetchMock = vi.fn(async (_input: unknown, init?: RequestInit) => {
       if (init?.method === 'PATCH') {
-        return { ok: false, status: 500, json: () => Promise.resolve({ error: { message: 'Server error' } }) };
+        return {
+          ok: false,
+          status: 500,
+          json: () => Promise.resolve({ error: { message: 'Server error' } }),
+        };
       }
       return ok({ data: [item] });
     });
@@ -262,7 +274,9 @@ describe('TodoList', () => {
     let resolvePatch!: (value: unknown) => void;
     const fetchMock = vi.fn(((_input: unknown, init?: RequestInit) => {
       if (init?.method === 'PATCH') {
-        return new Promise((resolve) => { resolvePatch = resolve; });
+        return new Promise((resolve) => {
+          resolvePatch = resolve;
+        });
       }
       return Promise.resolve(ok({ data: [item] }));
     }) as unknown as typeof fetch);
@@ -294,7 +308,9 @@ describe('TodoList', () => {
     const fetchMock = vi.fn(((_input: unknown, init?: RequestInit) => {
       if (init?.method === 'PATCH') {
         patchCount++;
-        return new Promise((resolve) => { resolvers.push(resolve); });
+        return new Promise((resolve) => {
+          resolvers.push(resolve);
+        });
       }
       return Promise.resolve(ok({ data: todos }));
     }) as unknown as typeof fetch);
@@ -317,9 +333,10 @@ describe('TodoList', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn(async (_input: unknown, init?: RequestInit) => {
-        if (init?.method === 'DELETE') return { ok: true, status: 204, json: () => Promise.resolve({}) };
+        if (init?.method === 'DELETE')
+          return { ok: true, status: 204, json: () => Promise.resolve({}) };
         return ok({ data: mockTodos });
-      }),
+      })
     );
 
     render(<TodoList />);

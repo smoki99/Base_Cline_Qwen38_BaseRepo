@@ -30,7 +30,8 @@ export default function TodoList() {
       const res = await fetch(`${apiBase}/api/todos`);
       const json = (await res.json()) as ApiResult<Todo[]>;
       if (isApiError(json)) throw new Error(json.error.message);
-      if (!res.ok || !Array.isArray(json.data)) throw new Error(`Request failed with status ${res.status}`);
+      if (!res.ok || !Array.isArray(json.data))
+        throw new Error(`Request failed with status ${res.status}`);
       setTodos(json.data);
     } catch (err) {
       setError((err as Error).message);
@@ -102,7 +103,12 @@ export default function TodoList() {
   // --- Loading Skeleton ---
   if (loading) {
     return (
-      <div className="skeleton-container" data-testid="skeleton" aria-busy="true" aria-label="Lädt…">
+      <div
+        className="skeleton-container"
+        data-testid="skeleton"
+        aria-busy="true"
+        aria-label="Lädt…"
+      >
         <div className="skeleton-bar" style={{ width: '60%' }} />
         <div className="skeleton-bar" style={{ width: '80%' }} />
         <div className="skeleton-bar" style={{ width: '45%' }} />
@@ -135,7 +141,11 @@ export default function TodoList() {
       {error && todos.length > 0 && (
         <div className="alert alert-danger d-flex align-items-center gap-2" role="alert">
           {error}
-          <button type="button" className="btn btn-sm btn-outline-danger ms-auto" onClick={() => void load()}>
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-danger ms-auto"
+            onClick={() => void load()}
+          >
             Retry
           </button>
         </div>

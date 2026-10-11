@@ -20,6 +20,7 @@
     "test:e2e": "npm run test:e2e -w web",
     "typecheck": "npm run typecheck --workspaces",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "knip": "knip",
     "audit": "npm audit --omit=dev --audit-level=high",
     "audit:signatures": "npm audit signatures",
