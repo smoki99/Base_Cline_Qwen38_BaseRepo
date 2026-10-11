@@ -16,7 +16,12 @@ DoD.
 
 ## Akzeptanzkriterien
 
-- [ ] `AGENTS.md` (aus Story-0011) enthält eine `## Guardrails`-Sektion: - Keine `any`-Typen (außer explizit kommentiert) - Kein `console.log`/`console.error` in Produktionscode - Keine Hard-Coded-URLs/Ports (immer aus Env) - Keine neuen Dependencies ohne Begründung im Commit - Tests vor Merge (CI grün)
+- [ ] `AGENTS.md` (aus Story-0011) enthält eine `## Guardrails`-Sektion:
+  - Keine `any`-Typen (außer explizit kommentiert)
+  - Kein `console.log`/`console.error` in Produktionscode
+  - Keine Hard-Coded-URLs/Ports (immer aus Env)
+  - Keine neuen Dependencies ohne Begründung im Commit
+  - Tests vor Merge (CI grün)
 - [ ] `CLAUDE.md`: Verweis auf `AGENTS.md` + kurze Projektübersicht
 - [ ] `.clinerules`: dito (Cline-spezifisch, aber konsistent)
 - [ ] Jede Story in `stories/` hat eine `## Definition of Done`-Sektion

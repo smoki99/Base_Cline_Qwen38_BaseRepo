@@ -16,9 +16,12 @@ Erstelle dann einen Conventional Commit:
   ebenfalls auf Deutsch, Zeilen max. ~100 Zeichen.
 
 Beispiele:
+
+```
 feat(api): User-Login-Endpunkt hinzufügen
 fix(shared): ApiResult-Typ auf optionale Felder erweitern
 chore: ESLint-Config auf flat config migrieren
+```
 
 Führe `git add -A && git commit -m "<message>"` aus.
 Melde kurz: was committed wurde (Commit-Hash + Subject).
