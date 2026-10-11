@@ -43,19 +43,24 @@ getestet (Unit + E2E) und CI- grün.
 
 ## Backlog — Stories (Single Source of Truth: GitHub Issues)
 
-| Story                                                                         | Thema                                        | Priority | Status |
-| ----------------------------------------------------------------------------- | -------------------------------------------- | -------- | ------ |
-| [Story-0006](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/28) | `npm run check` (ein Befehl für alle Gates)  | High     | ✅     |
-| [Story-0007](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/29) | Express 4 → 5                                | High     | ✅     |
-| [Story-0008](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/30) | Prettier-Check in CI                         | Medium   | ✅     |
-| [Story-0009](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/31) | CI: Timeout + Concurrency                    | High     | ✅     |
-| [Story-0010](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/32) | SAST + Secret-Scanning (CodeQL + gitleaks)   | High     | ⬜     |
-| [Story-0011](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/33) | Vitest-Coverage mit Schwellwert              | Medium   | ⬜     |
-| [Story-0012](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/34) | Security-Header (helmet)                     | High     | ⬜     |
-| [Story-0013](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/35) | Double-Submit-Prävention (Add + Delete)      | High     | ⬜     |
-| [Story-0014](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/36) | Web-Refactor: `lib/api.ts` + `useTodos`-Hook | Medium   | ⬜     |
-| [Story-0015](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/37) | AGENTS.md (agent-agnostisch) + Guardrails    | High     | ⬜     |
-| [Story-0016](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/38) | API-Vertrag als `docs/API.md`                | Low      | ⬜     |
+| Story                                                                         | Thema                                                     | Priority | Status |
+| ----------------------------------------------------------------------------- | --------------------------------------------------------- | -------- | ------ |
+| [Story-0001](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/39) | Einheitliche Validierung bei POST und PATCH               | High     | ✅     |
+| [Story-0002](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/40) | CORS-Verstöße mit 403 statt 500 melden                    | High     | ✅     |
+| [Story-0003](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/41) | Optimistisches Toggle vor Doppelklick-Race schützen       | Medium   | ✅     |
+| [Story-0004](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/42) | Dependency- und Package-Hygiene im Monorepo               | Medium   | ✅     |
+| [Story-0005](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/43) | CI- und Supply-Chain-Härtung (Dependabot + E2E-Artifacts) | Medium   | ✅     |
+| [Story-0006](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/28) | `npm run check` (ein Befehl für alle Gates)               | High     | ✅     |
+| [Story-0007](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/29) | Express 4 → 5                                             | High     | ✅     |
+| [Story-0008](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/30) | Prettier-Check in CI                                      | Medium   | ✅     |
+| [Story-0009](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/31) | CI: Timeout + Concurrency                                 | High     | ✅     |
+| [Story-0010](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/32) | SAST + Secret-Scanning (CodeQL + gitleaks)                | High     | ⬜     |
+| [Story-0011](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/33) | Vitest-Coverage mit Schwellwert                           | Medium   | ⬜     |
+| [Story-0012](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/34) | Security-Header (helmet)                                  | High     | ⬜     |
+| [Story-0013](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/35) | Double-Submit-Prävention (Add + Delete)                   | High     | ⬜     |
+| [Story-0014](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/36) | Web-Refactor: `lib/api.ts` + `useTodos`-Hook              | Medium   | ⬜     |
+| [Story-0015](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/37) | AGENTS.md (agent-agnostisch) + Guardrails                 | High     | ⬜     |
+| [Story-0016](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/38) | API-Vertrag als `docs/API.md`                             | Low      | ⬜     |
 
 ## Changelog
 
