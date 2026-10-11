@@ -348,4 +348,59 @@ describe('TodoList', () => {
     await waitFor(() => expect(screen.queryByTestId('todo-2')).not.toBeInTheDocument());
     expect(screen.getByTestId('todo-1')).toBeInTheDocument();
   });
+
+  it('prevents double-submit on Add button (in-flight guard)', async () => {
+    let resolvePost!: (value: unknown) => void;
+    const fetchMock = vi.fn(((_input: unknown, init?: RequestInit) => {
+      if (init?.method === 'POST') {
+        return new Promise((resolve) => {
+          resolvePost = resolve;
+        });
+      }
+      return Promise.resolve(ok({ data: mockTodos }));
+    }) as unknown as typeof fetch);
+    vi.stubGlobal('fetch', fetchMock);
+
+    render(<TodoList />);
+    const user = userEvent.setup();
+
+    const input = await screen.findByRole('textbox', { name: /new todo title/i });
+    await user.type(input, 'New Task');
+    const addBtn = screen.getByRole('button', { name: /add/i });
+
+    // Two rapid clicks – second should be ignored
+    void addBtn.click();
+    void addBtn.click();
+
+    const postCalls = fetchMock.mock.calls.filter((c) => c[1]?.method === 'POST');
+    expect(postCalls).toHaveLength(1);
+
+    resolvePost(ok({ data: { id: 99, title: 'New Task', done: false } }));
+  });
+
+  it('prevents double-submit on Delete button (in-flight guard)', async () => {
+    let resolveDelete!: (value: unknown) => void;
+    const fetchMock = vi.fn(((_input: unknown, init?: RequestInit) => {
+      if (init?.method === 'DELETE') {
+        return new Promise((resolve) => {
+          resolveDelete = resolve;
+        });
+      }
+      return Promise.resolve(ok({ data: mockTodos }));
+    }) as unknown as typeof fetch);
+    vi.stubGlobal('fetch', fetchMock);
+
+    render(<TodoList />);
+    const todo1 = await screen.findByTestId('todo-1');
+    const deleteBtn = within(todo1).getByRole('button', { name: /delete/i });
+
+    // Two rapid clicks – second should be ignored
+    void deleteBtn.click();
+    void deleteBtn.click();
+
+    const deleteCalls = fetchMock.mock.calls.filter((c) => c[1]?.method === 'DELETE');
+    expect(deleteCalls).toHaveLength(1);
+
+    resolveDelete({ ok: true, status: 204, json: () => Promise.resolve({}) });
+  });
 });

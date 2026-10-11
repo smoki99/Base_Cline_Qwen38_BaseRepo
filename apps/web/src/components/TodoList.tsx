@@ -11,6 +11,8 @@ export default function TodoList() {
   const [title, setTitle] = useState('');
   const [toast, setToast] = useState<Toast | null>(null);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const addInFlight = useRef(false);
+  const deleteInFlight = useRef<Set<number>>(new Set());
 
   function showToast(message: string, type: Toast['type']) {
     if (toastTimer.current) clearTimeout(toastTimer.current);
@@ -19,19 +21,31 @@ export default function TodoList() {
   }
 
   async function handleAdd() {
+    if (addInFlight.current) return;
     const trimmed = title.trim();
     if (!trimmed) return;
-    const result = await addTodo(trimmed);
-    if (result) {
-      setTitle('');
-      showToast('Todo hinzugefügt', 'success');
+    addInFlight.current = true;
+    try {
+      const result = await addTodo(trimmed);
+      if (result) {
+        setTitle('');
+        showToast('Todo hinzugefügt', 'success');
+      }
+    } finally {
+      addInFlight.current = false;
     }
   }
 
   async function handleDelete(todo: Parameters<typeof deleteTodo>[0]) {
-    const success = await deleteTodo(todo);
-    if (success) {
-      showToast('Todo gelöscht', 'success');
+    if (deleteInFlight.current.has(todo.id)) return;
+    deleteInFlight.current.add(todo.id);
+    try {
+      const success = await deleteTodo(todo);
+      if (success) {
+        showToast('Todo gelöscht', 'success');
+      }
+    } finally {
+      deleteInFlight.current.delete(todo.id);
     }
   }
 
