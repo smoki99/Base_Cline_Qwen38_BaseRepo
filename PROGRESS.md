@@ -31,7 +31,7 @@ getestet (Unit + E2E) und CI- grün.
 | 15  | Fail-Closed CORS (Production)                               | ⬜     |
 | 16  | CI: Least Privilege + Timeout + Concurrency                 | ✅     |
 | 17  | AGENTS.md (agent-agnostisch)                                | ⬜     |
-| 18  | `npm run check` (ein Befehl)                                | ⬜     |
+| 18  | `npm run check` (ein Befehl)                                | ✅     |
 | 19  | Validierungs-Schemas (zod) in shared                        | ⬜     |
 | 20  | Express 4 → 5                                               | ✅     |
 | 21  | Web: `lib/api.ts` + `useTodos`-Hook                         | ⬜     |
