@@ -1,6 +1,6 @@
 # Story-0008: Prettier-Check in CI
 
-**Status:** ⬜ offen
+**Status:** ✅ erledigt
 **Priority:** Medium
 **Bereich:** Root, CI
 **Phase:** 2 – CI-Hygiene
