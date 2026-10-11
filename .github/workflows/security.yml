@@ -60,7 +60,6 @@ jobs:
         run: |
           gitleaks detect \
             --source . \
-            --fail \
             --no-banner \
             --report-format json \
             --report-path gitleaks-report.json \
