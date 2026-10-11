@@ -55,6 +55,7 @@ getestet (Unit + E2E) und CI- grün.
 | [0013](stories/Story-0013.md)      | Validierungs-Schemas (zod) in shared        | Medium    | ⬜     |
 | [0007](docs/stories/Story-0007.md) | Express 4 → 5                               | Medium    | ✅     |
 | [0008](docs/stories/Story-0008.md) | Prettier-Check in CI                        | Medium    | ✅     |
+| [0009](docs/stories/Story-0009.md) | CI: timeout + concurrency                   | Medium    | ✅     |
 | [0015](stories/Story-0015.md)      | Web: `lib/api.ts` + `useTodos`-Hook         | Medium    | ⬜     |
 | [0016](stories/Story-0016.md)      | Vitest-Coverage mit Schwellwert             | Medium    | ⬜     |
 | [0018](stories/Story-0018.md)      | SAST + Secret-Scanning (CodeQL + gitleaks)  | Medium    | ⬜     |
