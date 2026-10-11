@@ -61,7 +61,7 @@
     "lint-staged": "^17.6.0",
     "prettier": "^3",
     "size-limit": "^14.2.0",
-    "typescript": "^5.9",
+    "typescript": "^7.0",
     "typescript-eslint": "^8"
   }
 }
