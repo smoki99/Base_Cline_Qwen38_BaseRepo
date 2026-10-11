@@ -41,24 +41,21 @@ getestet (Unit + E2E) und CI- grün.
 | 25  | DoD + Guardrails in Agent-Regeln                            | ⬜     |
 | 26  | API-Vertrag als `docs/API.md`                               | ⬜     |
 
-## Backlog — Stories (kanonisch: `docs/stories/`)
+## Backlog — Stories (Single Source of Truth: GitHub Issues)
 
-| Story                              | Thema                                       | Priorität | Status |
-| ---------------------------------- | ------------------------------------------- | --------- | ------ |
-| [0006](docs/stories/Story-0006.md) | `npm run check` (ein Befehl für alle Gates) | High      | ✅     |
-| [0007](docs/stories/Story-0007.md) | Express 4 → 5                               | High      | ✅     |
-| [0008](docs/stories/Story-0008.md) | Prettier-Check in CI                        | High      | ✅     |
-| [0009](docs/stories/Story-0009.md) | CI: Timeout + Concurrency                   | High      | ✅     |
-| [0010](docs/stories/Story-0010.md) | SAST + Secret-Scanning (CodeQL + gitleaks)  | Medium    | ⬜     |
-| [0011](docs/stories/Story-0011.md) | Vitest-Coverage mit Schwellwert             | Medium    | ⬜     |
-| [0012](docs/stories/Story-0012.md) | Security-Header (helmet)                    | Medium    | ⬜     |
-| [0013](docs/stories/Story-0013.md) | Double-Submit-Prävention (Add + Delete)     | Medium    | ⬜     |
-| [0014](docs/stories/Story-0014.md) | Web: `lib/api.ts` + `useTodos`-Hook         | Medium    | ⬜     |
-| [0015](docs/stories/Story-0015.md) | AGENTS.md (agent-agnostisch) + Guardrails   | Medium    | ⬜     |
-| [0016](docs/stories/Story-0016.md) | API-Vertrag als `docs/API.md`               | Medium    | ⬜     |
-
-> **Hinweis:** Das alte `stories/`-Verzeichnis ist veraltet und wird nicht mehr gepflegt.
-> Kanonisch ist ausschließlich `docs/stories/`.
+| Story                                                                         | Thema                                        | Priority | Status |
+| ----------------------------------------------------------------------------- | -------------------------------------------- | -------- | ------ |
+| [Story-0006](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/28) | `npm run check` (ein Befehl für alle Gates)  | High     | ✅     |
+| [Story-0007](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/29) | Express 4 → 5                                | High     | ✅     |
+| [Story-0008](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/30) | Prettier-Check in CI                         | Medium   | ✅     |
+| [Story-0009](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/31) | CI: Timeout + Concurrency                    | High     | ✅     |
+| [Story-0010](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/32) | SAST + Secret-Scanning (CodeQL + gitleaks)   | High     | ⬜     |
+| [Story-0011](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/33) | Vitest-Coverage mit Schwellwert              | Medium   | ⬜     |
+| [Story-0012](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/34) | Security-Header (helmet)                     | High     | ⬜     |
+| [Story-0013](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/35) | Double-Submit-Prävention (Add + Delete)      | High     | ⬜     |
+| [Story-0014](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/36) | Web-Refactor: `lib/api.ts` + `useTodos`-Hook | Medium   | ⬜     |
+| [Story-0015](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/37) | AGENTS.md (agent-agnostisch) + Guardrails    | High     | ⬜     |
+| [Story-0016](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/38) | API-Vertrag als `docs/API.md`                | Low      | ⬜     |
 
 ## Changelog
 

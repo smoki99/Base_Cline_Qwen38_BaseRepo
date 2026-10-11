@@ -27,6 +27,18 @@ apps/web = React 19 + Vite (nur UI) · apps/api = Express (REST) · packages/sha
     Source-only-Pakete (z. B. packages/shared) nutzen ein No-Op:
     `"build": "echo 'no build needed'"`
 
+## Story-Workflow (Pflicht)
+
+- **Single Source of Truth:** GitHub Issues mit Titel `Story-XXXX: <Thema>`.
+  Lokale Story-Markdown-Dateien (`docs/stories/`) werden NICHT mehr verwendet.
+- **Branch-Naming:** `feature/story-XXXX` (z. B. `feature/story-0010`)
+- **Commit-Naming:** Story-Referenz IMMER im Subject:
+  `feat(story-0010): SAST Workflow anlegen`
+  oder: `docs(story-0015): AGENTS.md anlegen`
+- **PR-Titel:** `Story-XXXX: <kurze Beschreibung>`
+- Vor Beginn: GitHub-Issue öffnen (Status offen)
+- Nach Abschluss: Issue schließen (Status completed)
+
 ## Thinking & Reasoning
 
 - Halte interne Denkprozesse (think-Tags) extrem kurz und prägnant (max. 3–5 Sätze).
