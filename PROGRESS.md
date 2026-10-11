@@ -27,7 +27,7 @@ getestet (Unit + E2E) und CI- grün.
 | 11  | UX-States: Skeleton, Empty State, Error+Retry, Toast        | ✅     |
 | 12  | Double-Submit-Prävention (Add + Delete)                     | ⬜     |
 | 13  | Security-Header (helmet)                                    | ⬜     |
-| 14  | Rate-Limiting                                               | ⬜     |
+| 14  | Rate-Limiting (abgelehnt – s. README)                       | ⬜     |
 | 15  | Fail-Closed CORS (Production)                               | ⬜     |
 | 16  | CI: Least Privilege + Timeout + Concurrency                 | ✅     |
 | 17  | AGENTS.md (agent-agnostisch)                                | ⬜     |
@@ -41,28 +41,24 @@ getestet (Unit + E2E) und CI- grün.
 | 25  | DoD + Guardrails in Agent-Regeln                            | ⬜     |
 | 26  | API-Vertrag als `docs/API.md`                               | ⬜     |
 
-## Backlog — Härtung (Stories 0006–0020)
+## Backlog — Stories (kanonisch: `docs/stories/`)
 
 | Story                              | Thema                                       | Priorität | Status |
 | ---------------------------------- | ------------------------------------------- | --------- | ------ |
-| [0006](stories/Story-0006.md)      | Double-Submit-Prävention (Add + Delete)     | High      | ⬜     |
-| [0007](stories/Story-0007.md)      | Security-Header (helmet)                    | High      | ⬜     |
-| [0008](stories/Story-0008.md)      | Rate-Limiting                               | High      | ⬜     |
-| [0009](stories/Story-0009.md)      | Fail-Closed CORS (Production)               | High      | ⬜     |
-| [0010](stories/Story-0010.md)      | CI: Least Privilege + Timeout + Concurrency | High      | ✅     |
-| [0011](stories/Story-0011.md)      | AGENTS.md (agent-agnostisch)                | High      | ⬜     |
-| [0012](stories/Story-0012.md)      | `npm run check` (ein Befehl)                | High      | ⬜     |
-| [0013](stories/Story-0013.md)      | Validierungs-Schemas (zod) in shared        | Medium    | ⬜     |
-| [0007](docs/stories/Story-0007.md) | Express 4 → 5                               | Medium    | ✅     |
-| [0008](docs/stories/Story-0008.md) | Prettier-Check in CI                        | Medium    | ✅     |
-| [0015](stories/Story-0015.md)      | Web: `lib/api.ts` + `useTodos`-Hook         | Medium    | ⬜     |
-| [0016](stories/Story-0016.md)      | Vitest-Coverage mit Schwellwert             | Medium    | ⬜     |
-| [0018](stories/Story-0018.md)      | SAST + Secret-Scanning (CodeQL + gitleaks)  | Medium    | ⬜     |
-| [0019](stories/Story-0019.md)      | DoD + Guardrails in Agent-Regeln            | Medium    | ⬜     |
-| [0020](stories/Story-0020.md)      | API-Vertrag als `docs/API.md`               | Medium    | ⬜     |
+| [0006](docs/stories/Story-0006.md) | `npm run check` (ein Befehl für alle Gates) | High      | ✅     |
+| [0007](docs/stories/Story-0007.md) | Express 4 → 5                               | High      | ✅     |
+| [0008](docs/stories/Story-0008.md) | Prettier-Check in CI                        | High      | ✅     |
+| [0009](docs/stories/Story-0009.md) | CI: Timeout + Concurrency                   | High      | ✅     |
+| [0010](docs/stories/Story-0010.md) | SAST + Secret-Scanning (CodeQL + gitleaks)  | Medium    | ⬜     |
+| [0011](docs/stories/Story-0011.md) | Vitest-Coverage mit Schwellwert             | Medium    | ⬜     |
+| [0012](docs/stories/Story-0012.md) | Security-Header (helmet)                    | Medium    | ⬜     |
+| [0013](docs/stories/Story-0013.md) | Double-Submit-Prävention (Add + Delete)     | Medium    | ⬜     |
+| [0014](docs/stories/Story-0014.md) | Web: `lib/api.ts` + `useTodos`-Hook         | Medium    | ⬜     |
+| [0015](docs/stories/Story-0015.md) | AGENTS.md (agent-agnostisch) + Guardrails   | Medium    | ⬜     |
+| [0016](docs/stories/Story-0016.md) | API-Vertrag als `docs/API.md`               | Medium    | ⬜     |
 
-> Quelle: Code-Review (Qualität / Sicherheit / KI-Fähigkeit), 2026-07-01.
-> Reihenfolge-Vorschlag: 0012 → 0006 → 0007 → 0008 → 0009 → 0010 → 0011 → 0013 → 0014 → 0015 → 0016 → 0017 → 0018 → 0019 → 0020.
+> **Hinweis:** Das alte `stories/`-Verzeichnis ist veraltet und wird nicht mehr gepflegt.
+> Kanonisch ist ausschließlich `docs/stories/`.
 
 ## Changelog
 
