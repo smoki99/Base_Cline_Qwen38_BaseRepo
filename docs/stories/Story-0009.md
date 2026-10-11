@@ -1,6 +1,6 @@
 # Story-0009: CI – timeout-minutes + concurrency
 
-**Status:** ⬜ offen
+**Status:** 🔄 in Arbeit
 **Priority:** High
 **Bereich:** `.github/workflows/ci.yml`
 **Phase:** 2 – CI-Hygiene
@@ -12,14 +12,14 @@ Es fehlen noch `timeout-minutes` und `concurrency` in `ci.yml`.
 
 ## Akzeptanzkriterien
 
-- [ ] `ci.yml`: `timeout-minutes: 15` auf Job-Ebene
-- [ ] `ci.yml`: `concurrency: { group: ci-${{ github.ref }}, cancel-in-progress: true }`
-- [ ] CI bleibt grün nach Änderung
+- [x] `ci.yml`: `timeout-minutes: 15` auf Job-Ebene
+- [x] `ci.yml`: `concurrency: { group: ci-${{ github.ref }}, cancel-in-progress: true }`
+- [ ] CI bleibt grün nach Änderung (awaiting CI run)
 
 ## Tasks
 
-- [ ] `ci.yml`: `timeout-minutes: 15` unter `jobs.ci` ergänzen
-- [ ] `ci.yml`: `concurrency`-Block ergänzen
+- [x] `ci.yml`: `timeout-minutes: 15` unter `jobs.ci` ergänzen
+- [x] `ci.yml`: `concurrency`-Block ergänzen
 - [ ] Push → CI läuft, zweiter Push auf denselben Branch cancelt den ersten
 
 ## Definition of Done
