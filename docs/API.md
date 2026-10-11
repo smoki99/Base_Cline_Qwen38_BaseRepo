@@ -59,9 +59,9 @@ Legt ein neues Todo an.
 
 **Fehler**
 
-| Status | Körper                                                      | Bedingung         |
-| ------ | ----------------------------------------------------------- | ----------------- |
-| `400`  | `{ "error": { "message": "Title darf nicht leer sein." } }` | Body fehlt / leer |
+| Status | Körper                                                      | Bedingung                            |
+| ------ | ----------------------------------------------------------- | ------------------------------------ |
+| `400`  | `{ "error": { "message": "Title darf nicht leer sein." } }` | `title` fehlt, leer oder kein String |
 
 ---
 
@@ -98,10 +98,12 @@ Aktualisiert ein bestehendes Todo (Titel und/oder `done`-Flag).
 
 **Fehler**
 
-| Status | Körper                                               | Bedingung                   |
-| ------ | ---------------------------------------------------- | --------------------------- |
-| `400`  | `{ "error": { "message": "Invalid request body" } }` | Body leer / ungültige ID    |
-| `404`  | `{ "error": { "message": "Not found" } }`            | Todo mit ID existiert nicht |
+| Status | Körper                                                           | Bedingung                     |
+| ------ | ---------------------------------------------------------------- | ----------------------------- |
+| `400`  | `{ "error": { "message": "Invalid request body" } }`             | Body leer oder ungültige ID   |
+| `400`  | `{ "error": { "message": "Title darf nicht leer sein." } }`      | `title` leer oder kein String |
+| `400`  | `{ "error": { "message": "Done muss ein boolean Wert sein." } }` | `done` kein Boolean           |
+| `404`  | `{ "error": { "message": "Not found" } }`                        | Todo mit ID existiert nicht   |
 
 ---
 
@@ -136,7 +138,9 @@ Alle Fehlerantworten folgen demselben Schema:
 | Status | Bedeutung                           |
 | ------ | ----------------------------------- |
 | `400`  | Ungültige Anfrage (Body, Parameter) |
-| `404`  | Ressource nicht gefunden            |
+| `403`  | CORS: Origin nicht erlaubt          |
+| `404`  | Ressource oder Route nicht gefunden |
+| `500`  | Interner Serverfehler               |
 
 ---
 
