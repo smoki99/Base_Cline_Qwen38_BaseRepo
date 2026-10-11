@@ -21,6 +21,7 @@
     "@types/express": "5.0.6",
     "@types/node": "^22",
     "@types/supertest": "^7",
+    "@vitest/coverage-v8": "5.0.3",
     "supertest": "^7",
     "tsx": "^4",
     "vitest": "^5"
