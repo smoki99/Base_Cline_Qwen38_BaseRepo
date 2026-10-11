@@ -14,16 +14,16 @@ Es fehlen noch `timeout-minutes` und `concurrency` in `ci.yml`.
 
 - [x] `ci.yml`: `timeout-minutes: 15` auf Job-Ebene
 - [x] `ci.yml`: `concurrency: { group: ci-${{ github.ref }}, cancel-in-progress: true }`
-- [ ] CI bleibt grün nach Änderung (awaiting CI run)
+- [x] CI bleibt grün nach Änderung
 
 ## Tasks
 
 - [x] `ci.yml`: `timeout-minutes: 15` unter `jobs.ci` ergänzen
 - [x] `ci.yml`: `concurrency`-Block ergänzen
-- [ ] Push → CI läuft, zweiter Push auf denselben Branch cancelt den ersten
+- [x] Push → CI läuft, zweiter Push auf denselben Branch cancelt den ersten
 
 ## Definition of Done
 
-- [ ] `ci.yml` enthält `timeout-minutes` und `concurrency`
-- [ ] CI-Run erfolgreich
-- [ ] `npm run typecheck && npm run lint && npm test && npm run build`
+- [x] `ci.yml` enthält `timeout-minutes` und `concurrency`
+- [x] CI-Run erfolgreich
+- [x] `npm run typecheck && npm run lint && npm test && npm run build`
