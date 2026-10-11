@@ -1,7 +1,6 @@
 # Progress
 
-> Plan & Fortschritt, chronologisch. Neueste Einträge zuerst.
-> Status: ✅ fertig · 🔄 in Arbeit · ⬜ offen · ⛔ blockiert
+> Projekt-Historie. Offene Aufgaben: [GitHub Issues mit Label `story`](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues?q=is%3Aissue+label%3Astory)
 
 ## Ziel
 
@@ -9,58 +8,6 @@ Interaktiver „Click-Dummy“ als TypeScript + React-Boilerplate:
 Todo-App mit **komplettem CRUD** (Add / Toggle / Delete), **Bootstrap +
 Material Design** Styling und einer schönen Startseite. Vollständig
 getestet (Unit + E2E) und CI- grün.
-
-## Plan (Etappen)
-
-| #   | Etappe                                                      | Status |
-| --- | ----------------------------------------------------------- | ------ |
-| 1   | Progress-Datei anlegen                                      | ✅     |
-| 2   | Monorepo-Grundgerüst (npm workspaces, `packages/shared`)    | ✅     |
-| 3   | Express-Backend (`apps/server`) mit CRUD-API                | ✅     |
-| 4   | React-Frontend (`apps/web`, Vite + React 19)                | ✅     |
-| 5   | Bootstrap + Material Design UI (Startseite)                 | ✅     |
-| 6   | Unit-Tests (Vitest, RTL)                                    | ✅     |
-| 7   | E2E-Tests (Playwright)                                      | ✅     |
-| 8   | CI (GitHub Actions)                                         | ✅     |
-| 9   | ESLint + Prettier + TypeScript strikt                       | ✅     |
-| 10  | README + Doku + Agenten-Regeln (`.clinerules`, `CLAUDE.md`) | ✅     |
-| 11  | UX-States: Skeleton, Empty State, Error+Retry, Toast        | ✅     |
-| 12  | Double-Submit-Prävention (Add + Delete)                     | ⬜     |
-| 13  | Security-Header (helmet)                                    | ⬜     |
-| 14  | Rate-Limiting (abgelehnt – s. README)                       | ⬜     |
-| 15  | Fail-Closed CORS (Production)                               | ⬜     |
-| 16  | CI: Least Privilege + Timeout + Concurrency                 | ✅     |
-| 17  | AGENTS.md (agent-agnostisch)                                | ⬜     |
-| 18  | `npm run check` (ein Befehl)                                | ✅     |
-| 19  | Validierungs-Schemas (zod) in shared                        | ⬜     |
-| 20  | Express 4 → 5                                               | ✅     |
-| 21  | Web: `lib/api.ts` + `useTodos`-Hook                         | ⬜     |
-| 22  | Vitest-Coverage mit Schwellwert                             | ⬜     |
-| 23  | Prettier-Check in CI                                        | ✅     |
-| 24  | SAST + Secret-Scanning (CodeQL + gitleaks)                  | ⬜     |
-| 25  | DoD + Guardrails in Agent-Regeln                            | ⬜     |
-| 26  | API-Vertrag als `docs/API.md`                               | ⬜     |
-
-## Backlog — Stories (Single Source of Truth: GitHub Issues)
-
-| Story                                                                         | Thema                                                     | Priority | Status |
-| ----------------------------------------------------------------------------- | --------------------------------------------------------- | -------- | ------ |
-| [Story-0001](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/39) | Einheitliche Validierung bei POST und PATCH               | High     | ✅     |
-| [Story-0002](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/40) | CORS-Verstöße mit 403 statt 500 melden                    | High     | ✅     |
-| [Story-0003](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/41) | Optimistisches Toggle vor Doppelklick-Race schützen       | Medium   | ✅     |
-| [Story-0004](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/42) | Dependency- und Package-Hygiene im Monorepo               | Medium   | ✅     |
-| [Story-0005](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/43) | CI- und Supply-Chain-Härtung (Dependabot + E2E-Artifacts) | Medium   | ✅     |
-| [Story-0006](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/28) | `npm run check` (ein Befehl für alle Gates)               | High     | ✅     |
-| [Story-0007](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/29) | Express 4 → 5                                             | High     | ✅     |
-| [Story-0008](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/30) | Prettier-Check in CI                                      | Medium   | ✅     |
-| [Story-0009](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/31) | CI: Timeout + Concurrency                                 | High     | ✅     |
-| [Story-0010](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/32) | SAST + Secret-Scanning (CodeQL + gitleaks)                | High     | ⬜     |
-| [Story-0011](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/33) | Vitest-Coverage mit Schwellwert                           | Medium   | ⬜     |
-| [Story-0012](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/34) | Security-Header (helmet)                                  | High     | ⬜     |
-| [Story-0013](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/35) | Double-Submit-Prävention (Add + Delete)                   | High     | ⬜     |
-| [Story-0014](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/36) | Web-Refactor: `lib/api.ts` + `useTodos`-Hook              | Medium   | ⬜     |
-| [Story-0015](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/37) | AGENTS.md (agent-agnostisch) + Guardrails                 | High     | ⬜     |
-| [Story-0016](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/38) | API-Vertrag als `docs/API.md`                             | Low      | ⬜     |
 
 ## Changelog
 
