@@ -1,4 +1,5 @@
 {
+  "ignoreBinaries": ["pkill"],
   "workspaces": {
     "apps/api": {},
     "apps/web": {},

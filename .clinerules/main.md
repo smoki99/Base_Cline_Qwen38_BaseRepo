@@ -10,7 +10,9 @@ apps/web = React 19 + Vite (nur UI) · apps/api = Express (REST) · packages/sha
 3. Vor Änderungen: relevante Dateien LESEN, nichts annehmen.
 4. Keine neuen Dependencies ohne Rückfrage.
 5. NIE "fertig" melden oder committen, ohne vorher `npm run check` erfolgreich ausgeführt zu haben:
-   `npm run check` = typecheck + lint + test + build in allen Workspaces, bricht bei erstem Fehler ab.
+   `npm run check` = audit, signatures, lockfile, format, typecheck, lint, knip,
+   depcheck, pkg:validate, test, build, size in allen Workspaces, bricht bei
+   erstem Fehler ab.
    → `build` ist Pflicht, weil die CI `npm run build --workspaces` ausführt und
    ein fehlendes Script in EINEM Workspace den gesamten Loop bricht.
 6. Keine Secrets im Code. Config kommt aus .env (Vorlage: .env.example).
@@ -68,13 +70,17 @@ apps/web = React 19 + Vite (nur UI) · apps/api = Express (REST) · packages/sha
 - Gemeinsame Typen/DTOs immer in packages/shared definieren, nie duplizieren.
 - API-Antworten immer in Form: { "data": ... } oder { "error": { "message": ... } }.
 - apps/api: Routen in src/routes/, Logik in src/services/.
-- apps/web: holt Daten über fetch von der API (URL aus VITE_API_URL).
+- apps/web: holt Daten über fetch von der API – per Default relative `/api/*`-Pfade
+  (dev: Vite-Proxy, prod: Reverse-Proxy). `VITE_API_URL` nur optionale Override.
 
 ## Befehle
 
-- dev: npm run dev (web + api parallel)
-- check: npm run check (typecheck + lint + test + build, alle Workspaces)
+- dev: npm run dev (web + api parallel; API Default-Port 4001, Bind 127.0.0.1)
+- check: npm run check (audit, signatures, lockfile, format, typecheck, lint,
+  knip, depcheck, pkg:validate, test, build, size – alle Workspaces)
 - e2e: npx playwright install chromium && npm run test:e2e -w web
+  (läuft auf isolierten Ports 4001/5173, NIE gegen einen laufenden Dev-Server;
+  Override: E2E_API_PORT / E2E_WEB_PORT)
 
 ## Memory
 

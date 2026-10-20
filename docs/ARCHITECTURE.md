@@ -6,7 +6,7 @@
 ┌────────────────────────────────────────────────────────────┐
 │  apps/web (React 19 + Vite)                                │
 │  – Holt Daten via fetch von der API                        │
-│  – VITE_API_URL (aus .env) oder Vite-Proxy in dev          │
+│  – relative /api/*-Pfade (dev: Proxy, prod: Reverse-Proxy) │
 │  – Importiert Typen aus packages/shared                    │
 └──────────────────────┬─────────────────────────────────────┘
                        │ HTTP / REST
@@ -122,13 +122,15 @@ dieses Format und werden in der Web-App zur Typisierung der Fetch-Antworten verw
 
 ### Dev-Proxy
 
-In der Entwicklung proxys Vite `/api/*` auf `http://localhost:3001`,
-somit ist `VITE_API_URL` in dev nicht erforderlich.
-In Produktion wird `VITE_API_URL` aus der Environment gesetzt.
+In der Entwicklung proxys Vite `/api/*` auf `http://localhost:4001`,
+somit ist die Web-App per Default same-origin – `VITE_API_URL` ist nur eine
+**optionale Override** (falls die API woanders liegt).
+In Produktion laufen Web und API typischerweise hinter derselben Domain
+(Reverse-Proxy, siehe unten) – hier sind die Pfade ebenfalls relativ.
 
 ### CORS & Prod-Deployment
 
-In der Entwicklung proxys Vite `/api/*` auf `http://localhost:3001` (same-origin),
+In der Entwicklung proxys Vite `/api/*` auf `http://localhost:4001` (same-origin),
 somit ist CORS in dev nicht relevant. In Produktion hängen Web und API typischerweise
 an **unterschiedlichen Origins** – hier braucht der Browser CORS-Header oder einen
 same-origin-Aufbau. Zwei Wege:
@@ -136,7 +138,10 @@ same-origin-Aufbau. Zwei Wege:
 **Option A – CORS-Middleware (separate Origins):**
 Die API liefert `Access-Control-Allow-Origin` für erlaubte Origins. Die erlaubten
 Origins werden über `CORS_ORIGIN` (kommagetrennt) konfiguriert. Leer = alle Origins
-erlauben (**nur für dev**!).
+erlauben (**nur für dev**!). In Produktion (`NODE_ENV=production`) ist eine leere
+Allowlist **fail-closed**: Cross-Origin-Requests erhalten 403, statt still erlaubt
+zu werden. Requests ohne `Origin`-Header (z. B. same-origin, curl) sind von dieser
+Prüfung nicht betroffen.
 
 ```env
 CORS_ORIGIN=https://app.example.com
@@ -159,7 +164,7 @@ server {
 
   # API-Proxy
   location /api/ {
-    proxy_pass http://127.0.0.1:3001;
+    proxy_pass http://127.0.0.1:4001;
     proxy_set_header Host $host;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
   }
@@ -186,12 +191,16 @@ server {
    - `src/services/` – Business-Logik (keine HTTP-Kenntnisse)
 
 4. **apps/web**
-   - Holt Daten über `fetch` von der API (URL: `VITE_API_URL` oder Proxy)
+   - Holt Daten über `fetch` von der API über **relative** `/api/*`-Pfade
+     (dev: Vite-Proxy auf `http://localhost:4001`, prod: Reverse-Proxy)
+   - `VITE_API_URL` ist nur eine **optionale Override** (API liegt woanders)
    - Keine direkten Datenbankzugriffe
 
 5. **Konfiguration**
    - Secrets/Config ausschließlich aus `.env`
    - Vorlage: `.env.example`
+   - API-Defaults: `PORT=4001`, `HOST=127.0.0.1` (loopback-only, lokal-first;
+     `HOST=0.0.0.0` für LAN/Docker)
 
 ## Monorepo-Konventionen
 

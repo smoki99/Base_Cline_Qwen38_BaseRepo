@@ -80,43 +80,49 @@ npm run dev
 Danach:
 
 - **Web:** http://localhost:5173
-- **API:** http://localhost:3001
-- **Health-Check:** http://localhost:3001/health
+- **API:** http://localhost:4001
+- **Health-Check:** http://localhost:4001/health
 
 ### Environment-Variablen
 
-| Variable       | Beschreibung                                              | Default                 |
-| -------------- | --------------------------------------------------------- | ----------------------- |
-| `PORT`         | API-Port                                                  | `3001`                  |
-| `CORS_ORIGIN`  | Erlaubte CORS-Origin(s) für die API (prod), kommagetrennt | leer (alle)             |
-| `VITE_API_URL` | API-Basis-URL für das Web (prod)                          | `http://localhost:3001` |
+| Variable       | Beschreibung                                                                 | Default                                 |
+| -------------- | ---------------------------------------------------------------------------- | --------------------------------------- |
+| `PORT`         | API-Port                                                                     | `4001`                                  |
+| `HOST`         | API-Bind-Adresse (Default loopback-only)                                     | `127.0.0.1`                             |
+| `CORS_ORIGIN`  | Erlaubte CORS-Origin(s) für die API (prod), kommagetrennt                    | leer (dev: alle, prod: fail-closed)     |
+| `VITE_API_URL` | **Optionale Override** – API-Basis-URL für das Web, falls API woanders liegt | – (per Default relative `/api/*`-Pfade) |
 
-> In der Entwicklung übernimmt der **Vite-Proxy** (`/api` → `localhost:3001`),
-> `VITE_API_URL` wird dann nicht benötigt.
+> Die Web-App nutzt per Default **relative** `/api/*`-Pfade:
+> in der Entwicklung übernimmt der **Vite-Proxy** (`/api` → `localhost:4001`),
+> in Produktion der Reverse-Proxy – `VITE_API_URL` ist nur eine optionale
+> Override, falls die API woanders liegt.
 >
 > Für separate Origins in Produktion: `CORS_ORIGIN` auf der API setzen – oder
 > (empfohlen) Web + API hinter einem Reverse Proxy (same-origin) ausliefern.
+> Eine **leere** `CORS_ORIGIN` ist in Produktion (`NODE_ENV=production`)
+> fail-closed (403 statt allow-all).
 > Details: `docs/ARCHITECTURE.md` → „CORS & Prod-Deployment".
 
 ## Befehle
 
-| Command                    | Beschreibung                                                                     |
-| -------------------------- | -------------------------------------------------------------------------------- |
-| `npm run check`            | **Alle 4 Gates** (typecheck + lint + test + build) – bricht bei erstem Fehler ab |
-| `npm run dev`              | Web + API parallel starten (concurrently)                                        |
-| `npm run build`            | Alle Workspaces bauen                                                            |
-| `npm run lint`             | ESLint auf allen Workspaces                                                      |
-| `npm run test`             | Unit-Tests in allen Workspaces (Vitest)                                          |
-| `npm run test:e2e`         | Playwright-E2E (headless Chromium); startet API + Web automatisch                |
-| `npm run typecheck`        | TypeScript Typecheck (strict)                                                    |
-| `npm run knip`             | Dead Code & unused Dependencies detectieren                                      |
-| `npm run audit`            | Security-Scan (npm audit, Production-Deps, Level high+)                          |
-| `npm run audit:signatures` | Sigstore-Signaturverifikation aller Pakete                                       |
-| `npm run size`             | Bundle-Size-Budget prüfen (web ≤ 100 kB gzip)                                    |
-| `npm run depcheck`         | Circular-Dependency-Check (Monorepo)                                             |
-| `npm run pkg:validate`     | package.json-Struktur in allen Workspaces validieren                             |
-| `npm run verify:lockfile`  | Alle installierten Pakete gegen lockfile verifizieren                            |
-| `npm run format`           | Prettier formatiert den Code                                                     |
+| Command                    | Beschreibung                                                                                                                                        |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run check`            | **Alle Gates**: audit, signatures, lockfile, format, typecheck, lint, knip, depcheck, pkg:validate, test, build, size – bricht bei erstem Fehler ab |
+| `npm run dev`              | Web + API parallel starten (concurrently)                                                                                                           |
+| `npm run dev:clean`        | Stale tsx/vite-Worker killen + Dev-Ports 4001/5173 freiräumen                                                                                       |
+| `npm run build`            | Alle Workspaces bauen                                                                                                                               |
+| `npm run lint`             | ESLint auf allen Workspaces                                                                                                                         |
+| `npm run test`             | Unit-Tests in allen Workspaces (Vitest)                                                                                                             |
+| `npm run test:e2e`         | Playwright-E2E (headless Chromium); startet API + Web automatisch auf isolierten Ports                                                              |
+| `npm run typecheck`        | TypeScript Typecheck (strict)                                                                                                                       |
+| `npm run knip`             | Dead Code & unused Dependencies detectieren                                                                                                         |
+| `npm run audit`            | Security-Scan (npm audit, Production-Deps, Level critical)                                                                                          |
+| `npm run audit:signatures` | Sigstore-Signaturverifikation aller Pakete                                                                                                          |
+| `npm run size`             | Bundle-Size-Budget prüfen (web ≤ 100 kB gzip)                                                                                                       |
+| `npm run depcheck`         | Circular-Dependency-Check (Monorepo)                                                                                                                |
+| `npm run pkg:validate`     | package.json-Struktur in allen Workspaces validieren                                                                                                |
+| `npm run verify:lockfile`  | Alle installierten Pakete gegen lockfile verifizieren                                                                                               |
+| `npm run format`           | Prettier formatiert den Code                                                                                                                        |
 
 ## API
 
@@ -138,6 +144,10 @@ Danach:
 - **E2E (Playwright, headless Chromium):** `npm run test:e2e`
   - Startet **API + Web automatisch** über `webServer` mit Readiness
     (`/health` bzw. Port 5173) – kein manuelles `npm run dev`.
+  - **Isolation (Pflicht):** E2E läuft auf eigenen Ports (API 4001, Web 5173)
+    und **nie** gegen einen laufenden Dev-Server – sonst schreiben Tests in
+    die Instanz-Daten des Nutzers. Bei belegten Ports: `E2E_API_PORT` /
+    `E2E_WEB_PORT` setzen.
   - Vor dem ersten Lauf einmalig: `npx playwright install chromium`.
   - Deckt ab: `GET /` (200, `text/html`), `GET /index.html` (200),
     React-Mount, seeded-Todos, keine Page-/Console-Errors.
@@ -148,35 +158,36 @@ Danach:
 `pull_request` (`master`), `workflow_dispatch`.
 
 1. `npm ci`
-2. `npm audit --omit=dev --audit-level=high`
-3. Unexpected-Package-Check (installierte Pakete vs. lockfile)
-4. `npm run typecheck`
-5. `npm run lint`
-6. `npx knip`
-7. `npm audit --audit-level=high`
-8. `npm run depcheck`
-9. `npm run pkg:validate`
-10. `npm test` (Unit)
-11. `npm run build`
-12. `npm run size`
-13. `npx playwright install --with-deps chromium`
-14. `npm run test:e2e -w web`
+2. `npm audit --omit=dev --audit-level=critical`
+3. `npm audit signatures`
+4. Unexpected-Package-Check (installierte Pakete vs. lockfile)
+5. `npm run format:check`
+6. `npm run typecheck`
+7. `npm run lint`
+8. `npx knip`
+9. `npm run depcheck`
+10. `npm run pkg:validate`
+11. `npm test` (Unit)
+12. `npm run build`
+13. `npm run size`
+14. `npx playwright install --with-deps chromium`
+15. `npm run test:e2e -w web`
 
 Die Actions laufen nativ auf **Node 24** (`actions/checkout@v7`,
 `actions/setup-node@v7`).
 
 ## Supply Chain Security
 
-| Maßnahme                                  | Wo                                                            |
-| ----------------------------------------- | ------------------------------------------------------------- |
-| Integrity-Hash (SHA-512)                  | `package-lock.json` – npm verifiziert bei jedem Install       |
-| `npm ci` (frozen lockfile)                | CI – schlägt fehl bei inkonsistentem lockfile                 |
-| `npm audit --omit=dev --audit-level=high` | Skript + CI – Production-Deps                                 |
-| **`npm audit signatures`**                | Skript + CI – Sigstore-Verifikation aller Paket-Signaturen    |
-| **Exakte Version-Pinning**                | `.npmrc` → `save-exact=true` – neue Deps werden exakt gepinnt |
-| **Corepack `packageManager`**             | `package.json` → `npm@11.8.0` – deterministische npm-Version  |
-| **Unexpected-Package-Check**              | CI – vergleicht installierte Pakete mit lockfile              |
-| Knip (unused deps)                        | Skript + CI – reduziert Angriffsfläche                        |
+| Maßnahme                                      | Wo                                                            |
+| --------------------------------------------- | ------------------------------------------------------------- |
+| Integrity-Hash (SHA-512)                      | `package-lock.json` – npm verifiziert bei jedem Install       |
+| `npm ci` (frozen lockfile)                    | CI – schlägt fehl bei inkonsistentem lockfile                 |
+| `npm audit --omit=dev --audit-level=critical` | Skript + CI – Production-Deps                                 |
+| **`npm audit signatures`**                    | Skript + CI – Sigstore-Verifikation aller Paket-Signaturen    |
+| **Exakte Version-Pinning**                    | `.npmrc` → `save-exact=true` – neue Deps werden exakt gepinnt |
+| **Corepack `packageManager`**                 | `package.json` → `npm@11.8.0` – deterministische npm-Version  |
+| **Unexpected-Package-Check**                  | CI – vergleicht installierte Pakete mit lockfile              |
+| Knip (unused deps)                            | Skript + CI – reduziert Angriffsfläche                        |
 
 ### Neues Paket hinzufügen – Checkliste
 

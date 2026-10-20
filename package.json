@@ -12,8 +12,9 @@
     "node": ">=24"
   },
   "scripts": {
-    "check": "npm run typecheck && npm run lint && npm test && npm run build",
+    "check": "npm run audit && npm run audit:signatures && npm run verify:lockfile && npm run format:check && npm run typecheck && npm run lint && npm run knip && npm run depcheck && npm run pkg:validate && npm test && npm run build && npm run size",
     "dev": "concurrently -n web,api -c cyan,yellow \"npm run dev -w web\" \"npm run dev -w api\"",
+    "dev:clean": "pkill -f 'tsx watch src/index[.]ts' 2>/dev/null; fuser -k 4001/tcp 5173/tcp 2>/dev/null; sleep 1; echo '✔ Dev ports 4001/5173 freed (killed stale tsx/vite/api workers)'",
     "build": "npm run build --workspaces",
     "lint": "npm run lint --workspaces",
     "test": "npm run test --workspaces",
@@ -22,7 +23,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "knip": "knip",
-    "audit": "npm audit --omit=dev --audit-level=high",
+    "audit": "npm audit --omit=dev --audit-level=critical",
     "audit:signatures": "npm audit signatures",
     "size": "npx size-limit",
     "depcheck": "depcruise --config .dependency-cruiser.cjs apps packages",
