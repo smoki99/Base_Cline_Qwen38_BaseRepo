@@ -22,7 +22,9 @@
 > NIE „fertig" melden oder committen, ohne vorher **ALLE** Checks erfolgreich ausgeführt zu haben:
 
 ```bash
-npm run check   # typecheck + lint + test + build – alle Workspaces, bricht bei erstem Fehler ab
+npm run check   # alle Gates: audit, signatures, lockfile, format, typecheck, lint, knip,
+                # depcheck, pkg:validate, test, build, size – alle Workspaces, bricht bei
+                # erstem Fehler ab
 ```
 
 **Warum `build`?**
@@ -34,6 +36,17 @@ Ein fehlendes Script bricht den CI-Loop – auch wenn typecheck/lint/test grün 
 ```bash
 npx playwright install chromium   # einmalig, Browser-Binaries
 npm run test:e2e -w web
+```
+
+**E2E-Isolation (Pflicht):**
+E2E darf **nie** einen laufenden Dev-Server (und dessen Daten) verwenden.
+`reuseExistingServer: !CI` würde einen lokal laufenden Dev-Server übernehmen –
+Tests schreiben dann in die Instanz-Daten des Nutzers (Datenverlust,
+Vorfall 2026-10-19 in `Base_Chat_WebUI`, Story-0038). E2E bekommt deshalb
+eigene Ports (Default 4001/5173); sind die lokal belegt, Override nutzen:
+
+```bash
+E2E_API_PORT=3101 E2E_WEB_PORT=5273 npm run test:e2e -w web
 ```
 
 ## 4. CI-Parität
@@ -50,8 +63,11 @@ npm run test:e2e -w web
 
 - Gemeinsame Typen/DTOs **immer** in `packages/shared` – nie duplizieren.
 - API-Antworten: `{ "data": ... }` oder `{ "error": { "message": ... } }`.
-- `apps/api`: Routen in `src/routes/`, Logik in `src/services/`.
-- `apps/web`: holt Daten via `fetch` (URL aus `VITE_API_URL`).
+- `apps/api`: Routen in `src/routes/`, Logik in `src/services/`. Bind-Adresse
+  `HOST` (Default `127.0.0.1` = loopback-only, lokal-first).
+- `apps/web`: holt Daten via `fetch` über **relative** `/api/*`-Pfade
+  (dev: Vite-Proxy auf die API, prod: Reverse-Proxy). `VITE_API_URL` ist nur
+  eine **optionale Override**, falls die API woanders liegt.
 
 ## 6. Git & Commits
 
@@ -120,12 +136,13 @@ gh pr diff <PR-Nummer> > /tmp/pr-diff.txt
 
 - **Keine Secrets im Code.**
 - Config kommt aus `.env` (Vorlage: `.env.example`).
-- `npm audit --omit=dev --audit-level=high` vor jedem Merge.
+- `npm audit --omit=dev --audit-level=critical` vor jedem Merge.
 
 ## 8. Dokumentation
 
 - Wichtige Entscheidungen → `docs/DECISIONS.md` (Datum · Entscheidung · Begründung).
-- Fortschritt → `docs/PROGRESS.md`.
+- Fortschritt → Root-`PROGRESS.md` (kurzlebiges Story-Arbeits-Log, active Story);
+  dauerhaftes Projekt-Log → `docs/PROGRESS.md`.
 - Architektur → `docs/ARCHITECTURE.md`.
 
 ## 9. Monorepo-Konventionen
@@ -140,4 +157,4 @@ gh pr diff <PR-Nummer> > /tmp/pr-diff.txt
 
 ---
 
-_Letzte Aktualisierung: 2026-10-11_
+_Letzte Aktualisierung: 2026-10-20_

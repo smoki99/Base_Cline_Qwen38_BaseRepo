@@ -1,6 +1,6 @@
 # API – Referenz
 
-> **Basis-URL (dev):** `http://localhost:3001`
+> **Basis-URL (dev):** `http://localhost:4001`
 > **Content-Type:** `application/json`
 > **Antwort-Envelope:** `{ "data": ... }` bei Erfolg · `{ "error": { "message": "..." } }` bei Fehlern
 
