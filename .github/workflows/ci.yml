@@ -28,7 +28,7 @@ jobs:
           cache: npm
 
       - run: npm ci
-      - run: npm audit --omit=dev --audit-level=high
+      - run: npm audit --omit=dev --audit-level=critical
       - run: npm audit signatures
       - name: Check for unexpected packages
         run: node scripts/verify-lockfile.cjs

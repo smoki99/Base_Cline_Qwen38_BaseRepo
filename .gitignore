@@ -12,3 +12,6 @@ build/
 coverage/
 test-results/
 playwright-report/
+
+# Runtime data (instance files) – never commit
+apps/api/data/
