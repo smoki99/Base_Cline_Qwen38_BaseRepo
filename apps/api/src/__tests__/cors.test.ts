@@ -77,4 +77,25 @@ describe('CORS', () => {
     expect(res.status).toBe(200);
     expect(res.headers['access-control-allow-origin']).toBe('http://random.test');
   });
+
+  it('denies cross-origin requests when CORS_ORIGIN is empty in production (fail-closed)', async () => {
+    vi.stubEnv('CORS_ORIGIN', '');
+    vi.stubEnv('NODE_ENV', 'production');
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      const res = await request(app).get('/api/todos').set('Origin', 'http://random.test');
+      expect(res.status).toBe(403);
+      expect(res.headers['access-control-allow-origin']).toBeUndefined();
+      expect(res.body.error.message).toBe('Forbidden');
+    } finally {
+      consoleSpy.mockRestore();
+    }
+  });
+
+  it('still allows non-browser requests (no Origin header) in production', async () => {
+    vi.stubEnv('CORS_ORIGIN', '');
+    vi.stubEnv('NODE_ENV', 'production');
+    const res = await request(app).get('/api/todos');
+    expect(res.status).toBe(200);
+  });
 });

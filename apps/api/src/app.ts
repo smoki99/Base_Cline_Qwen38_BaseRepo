@@ -11,8 +11,10 @@ app.disable('x-powered-by');
 // Security headers (X-Content-Type-Options, Referrer-Policy, X-Frame-Options, …)
 app.use(helmet({ referrerPolicy: { policy: 'no-referrer' } }));
 
-// CORS – allowed origins from CORS_ORIGIN (comma-separated).
-// Empty/unset = allow all (dev convenience). Evaluated per request.
+// CORS – allowed origins from CORS_ORIGIN (comma-separated, see .env.example).
+// Dev convenience: empty/unset = allow all origins.
+// Fail-closed: in production (NODE_ENV=production) an empty allowlist denies
+// cross-origin requests instead of silently allowing them.
 app.use(
   cors({
     origin(origin, callback) {
@@ -20,12 +22,8 @@ app.use(
         .split(',')
         .map((s) => s.trim())
         .filter(Boolean);
-      if (
-        origin === undefined ||
-        origin === '' ||
-        allowed.length === 0 ||
-        allowed.includes(origin)
-      ) {
+      const allowAllInDev = allowed.length === 0 && process.env.NODE_ENV !== 'production';
+      if (origin === undefined || origin === '' || allowed.includes(origin) || allowAllInDev) {
         callback(null, true);
       } else {
         callback(Object.assign(new Error('Not allowed by CORS'), { status: 403 }));
@@ -34,7 +32,8 @@ app.use(
   })
 );
 
-app.use(express.json());
+// Body-size limit – protects against oversized/malformed payloads.
+app.use(express.json({ limit: '5mb' }));
 app.use(healthRouter);
 app.use(todoRouter);
 
