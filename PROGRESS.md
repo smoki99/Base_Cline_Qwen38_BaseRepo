@@ -19,14 +19,38 @@
 
 ## Aktuelle Story
 
-_Noch keine aktive Story – dieses Log ist für die nächste Entwicklung vorgesehen._
+**Story-0018: TodoStore-Vertrag + persistente Datei-Store (ID-Stabilität)** – [#60](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/60)
+
+Ziel: Die API hat keinen Speicher-Vertrag – `todoService` hielt `todos`/`nextId` als
+modulweite Mutable State, nach einem Restart waren alle Todos weg. Diese Story führt
+den `TodoStore`-Vertrag (Interface) mit `InMemoryTodoStore` (Tests) und `FileTodoStore`
+(JSON, atomare Schreibweise) ein; `todoService`/`routes`/`app` werden DI-fähig
+(Factory-Pattern). ID-Vertrag: server-assigned, monoton steigend (persistierter
+High-Watermark `maxId`), stabil über Restarts, nie wiederverwendet. Korrupte Datei =
+Fail-Fast mit klarer Meldung. E2E nutzt eine isolierte `TODO_DATA_FILE`.
 
 ## Einzeltasks/Steps
 
-| #   | Task                   | Status |
-| --- | ---------------------- | ------ |
-| –   | _(bei Start befüllen)_ | ⏳     |
+| #   | Task                                                                                                                | Status |
+| --- | ------------------------------------------------------------------------------------------------------------------- | ------ |
+| 1   | `TodoStore`-Interface + ID-/Concurrency-Vertrag (dokumentiert)                                                      | ✅     |
+| 2   | `BaseTodoStore` (serialized Mutations) + `InMemoryTodoStore` (Seed, defensive Copies)                               | ✅     |
+| 3   | `FileTodoStore`: `open()`, Seed bei Erststart, Format `{v:1, maxId, todos}`, atomares Persistieren                  | ✅     |
+| 4   | Korruptionsfälle → `CorruptStoreError`; `index.ts` Fail-Fast (Exit 1, klare Meldung)                                | ✅     |
+| 5   | DI-Refactor: `createTodoRouter(service)`, `createApp(service)`, `TodoService`-Class                                 | ✅     |
+| 6   | Tests: `todoStore.test.ts` (Restart/ID-Wiederverwendung/Konkurrenz/Atomarität/Korruption), CRUD via `createTestApp` | ✅     |
+| 7   | E2E-Isolation: `global-setup.ts` wipet E2E-Daten-Dir, `TODO_DATA_FILE` in `playwright.config.ts`                    | ✅     |
+| 8   | Doku: `.env.example` + README-Env-Tabelle + DECISIONS.md-Eintrag                                                    | ✅     |
+| 9   | `npm run check` + E2E grün, Commit, Push, „bereit für PR“                                                           | ✅     |
 
 ## Status-Log
 
 _(neueste oben)_
+
+- 2026-10-21 – Validierung grün: `npm run check` (alle Gates) + E2E 6/6 in zwei
+  Runs (Deterministik). Gefeixt: E2E-Store lag in Playwrights verwalteter
+  `test-results/`-Dir (Playwright wipet sie → ENOENT auf persist) → Verlagerung
+  nach `apps/web/e2e-data/` + `persist()`-Härtung (mkdir) + Regressionstest.
+  Commit + Push, „fertig, bereit für PR“.
+- 2026-10-21 – Spec (Issue #60) erstellt, Freigabe „GO“ erhalten; Implementation
+  (Tasks 1–8) im Arbeitsbaum, Doku-Sync erledigt.

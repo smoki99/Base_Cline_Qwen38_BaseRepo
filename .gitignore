@@ -15,3 +15,5 @@ playwright-report/
 
 # Runtime data (instance files) – never commit
 apps/api/data/
+# E2E-API data file (isolated store, see apps/web/e2e/global-setup.ts)
+apps/web/e2e-data/

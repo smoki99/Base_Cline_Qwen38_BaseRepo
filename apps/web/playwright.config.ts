@@ -13,8 +13,15 @@ const apiPort = process.env.E2E_API_PORT || '4001';
 // is occupied locally (e.g. by another service).
 const webPort = process.env.E2E_WEB_PORT || '5173';
 
+// The E2E API's persistent store – isolated from real dev data (apps/api/data)
+// and from Playwright's managed test-results/ directory (Playwright wipes it).
+// Wiped by e2e/global-setup.ts before each run; the API seeds a fresh store
+// on first start, which keeps the seeded-count assertions deterministic.
+const e2eApiDataFile = path.resolve(root, 'apps/web/e2e-data/todos.json');
+
 export default defineConfig({
   testDir: './e2e',
+  globalSetup: './e2e/global-setup',
   timeout: 30_000,
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? 'github' : 'list',
@@ -40,6 +47,7 @@ export default defineConfig({
       env: {
         ...process.env,
         PORT: apiPort,
+        TODO_DATA_FILE: e2eApiDataFile,
       },
     },
     {
