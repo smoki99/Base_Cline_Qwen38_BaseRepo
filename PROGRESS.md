@@ -19,34 +19,43 @@
 
 ## Aktuelle Story
 
-**Story-0018: TodoStore-Vertrag + persistente Datei-Store (ID-Stabilität)** – [#60](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/60)
+**Story-0019: Optimistic Locking (If-Match/rev) + Race-Handling im Web-Client** – [#61](https://github.com/smoki99/Base_Cline_Qwen38_BaseRepo/issues/61)
 
-Ziel: Die API hat keinen Speicher-Vertrag – `todoService` hielt `todos`/`nextId` als
-modulweite Mutable State, nach einem Restart waren alle Todos weg. Diese Story führt
-den `TodoStore`-Vertrag (Interface) mit `InMemoryTodoStore` (Tests) und `FileTodoStore`
-(JSON, atomare Schreibweise) ein; `todoService`/`routes`/`app` werden DI-fähig
-(Factory-Pattern). ID-Vertrag: server-assigned, monoton steigend (persistierter
-High-Watermark `maxId`), stabil über Restarts, nie wiederverwendet. Korrupte Datei =
-Fail-Fast mit klarer Meldung. E2E nutzt eine isolierte `TODO_DATA_FILE`.
+Ziel: Zwei Clients (oder ein Client + Reload) können denselben Todo gleichzeitig
+ändern – ohne Versions-Vertrag gewinnt das blinde letzte Schreiben (Lost Update)
+und der Client zeigt danach veralteten Zustand. Diese Story führt ein
+`rev`-Versionsfeld (Teil des `Todo`-Vertrags in `shared`) ein: PATCH/DELETE
+erfordern `If-Match: <rev>`, der Server antwortet bei Missmatch mit
+`412 Precondition Failed` (`{ error: { message } }`); `2xx`-Responses sind
+kanonisch und der Client ersetzt damit die lokale Entity. Der Web-Client
+(`useTodos`) löst 412 mit Reload der Liste + sichtbarem Konflikt-Fehler auf
+(kein stummes Snapshot-Rollback); andere Fehler bleiben bei
+Optimistic-Update + Rollback. Inflight-Lock pro Todo bleibt bestehen.
 
 ## Einzeltasks/Steps
 
-| #   | Task                                                                                                                | Status |
-| --- | ------------------------------------------------------------------------------------------------------------------- | ------ |
-| 1   | `TodoStore`-Interface + ID-/Concurrency-Vertrag (dokumentiert)                                                      | ✅     |
-| 2   | `BaseTodoStore` (serialized Mutations) + `InMemoryTodoStore` (Seed, defensive Copies)                               | ✅     |
-| 3   | `FileTodoStore`: `open()`, Seed bei Erststart, Format `{v:1, maxId, todos}`, atomares Persistieren                  | ✅     |
-| 4   | Korruptionsfälle → `CorruptStoreError`; `index.ts` Fail-Fast (Exit 1, klare Meldung)                                | ✅     |
-| 5   | DI-Refactor: `createTodoRouter(service)`, `createApp(service)`, `TodoService`-Class                                 | ✅     |
-| 6   | Tests: `todoStore.test.ts` (Restart/ID-Wiederverwendung/Konkurrenz/Atomarität/Korruption), CRUD via `createTestApp` | ✅     |
-| 7   | E2E-Isolation: `global-setup.ts` wipet E2E-Daten-Dir, `TODO_DATA_FILE` in `playwright.config.ts`                    | ✅     |
-| 8   | Doku: `.env.example` + README-Env-Tabelle + DECISIONS.md-Eintrag                                                    | ✅     |
-| 9   | `npm run check` + E2E grün, Commit, Push, „bereit für PR“                                                           | ✅     |
+| #   | Task                                                                                                             | Status |
+| --- | ---------------------------------------------------------------------------------------------------------------- | ------ |
+| 1   | `shared`: `Todo.rev` (Vertragsfeld, ≥ 1), Doku-Vertrag                                                           | ✅     |
+| 2   | `todoStore`: `rev` (Create=1, Update/Remove erwarten `expectedRev`), 412-Fehlertyp                               | ✅     |
+| 3   | `todoService`/`routes`: `If-Match`-Parsing (400 fehlend/ungültig), 412 bei Missmatch (PATCH + DELETE)            | ✅     |
+| 4   | `web/lib/api.ts`: `If-Match`-Header (update/delete), 412 → `ConflictError`                                       | ✅     |
+| 5   | `useTodos`: 2xx → lokale Entity durch Server-Antwort ersetzen; 412 → Reload + Fehler sichtbar; 5xx → Rollback    | ✅     |
+| 6   | Tests: Store (rev/412/Restart), Service, Routes (If-Match-Vertrag PATCH + DELETE), Api-Client, Hook (renderHook) | ✅     |
+| 7   | Doku: DECISIONS.md-Eintrag (If-Match/rev-Vertrag)                                                                | ✅     |
+| 8   | `npm run check` + E2E grün, Commit, Push, „bereit für PR“                                                        | ✅     |
 
 ## Status-Log
 
 _(neueste oben)_
 
+- 2026-10-21 – **Story-0019** (Issue #61) implementiert: `rev`-Vertrag (shared/api),
+  `If-Match`/412 auf PATCH + DELETE, `ConflictError` im Api-Client, `useTodos`
+  (2xx → kanonische Entity, 412 → Reload + Fehler sichtbar, 5xx → Rollback),
+  Hook-Tests (renderHook) neu. `npm run check` grün (API 63 + Web 35 Tests),
+  E2E 6/6 (isolierte Ports 4011/5183). Hinweis: E2E mit Default-Port 5173
+  kollidiert mit fremdem Vite-Prozess auf der Dev-Maschine (`reuseExistingServer`)
+  → isolierte Ports verwenden. Commit + Push, „fertig, bereit für PR“.
 - 2026-10-21 – Validierung grün: `npm run check` (alle Gates) + E2E 6/6 in zwei
   Runs (Deterministik). Gefeixt: E2E-Store lag in Playwrights verwalteter
   `test-results/`-Dir (Playwright wipet sie → ENOENT auf persist) → Verlagerung

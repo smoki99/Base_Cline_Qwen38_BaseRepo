@@ -4,6 +4,12 @@ export interface Todo {
   id: number;
   title: string;
   done: boolean;
+  /**
+   * Revision number (optimistic locking): starts at 1 on creation and
+   * increments by 1 on every mutation. Clients send the last known rev as
+   * the `If-Match` header on PATCH/DELETE; a mismatch yields 412.
+   */
+  rev: number;
 }
 
 /** Payload for creating a todo. */

@@ -7,9 +7,9 @@ import type { CreateTodo, Todo, UpdateTodo } from 'shared';
  * Content is frozen: `apps/web/e2e/home.spec.ts` expects exactly these 3 todos.
  */
 export const SEED_TODOS: readonly Todo[] = [
-  { id: 1, title: 'Learn TypeScript', done: true },
-  { id: 2, title: 'Build an API', done: false },
-  { id: 3, title: 'Write tests', done: false },
+  { id: 1, title: 'Learn TypeScript', done: true, rev: 1 },
+  { id: 2, title: 'Build an API', done: false, rev: 1 },
+  { id: 3, title: 'Write tests', done: false, rev: 1 },
 ];
 
 /** Raised when the persisted data file exists but cannot be interpreted (fail fast, no silent data loss). */
@@ -23,6 +23,21 @@ export class CorruptStoreError extends Error {
   }
 }
 
+/** Raised when a mutation carries a stale revision (optimistic locking / If-Match mismatch). */
+export class RevisionConflictError extends Error {
+  readonly id: number;
+  readonly expectedRev: number;
+  readonly actualRev: number;
+
+  constructor(id: number, expectedRev: number, actualRev: number) {
+    super(`revision conflict for todo ${id}: expected rev ${expectedRev}, actual rev ${actualRev}`);
+    this.name = 'RevisionConflictError';
+    this.id = id;
+    this.expectedRev = expectedRev;
+    this.actualRev = actualRev;
+  }
+}
+
 /**
  * Persistence contract for todos.
  *
@@ -33,6 +48,11 @@ export class CorruptStoreError extends Error {
  * - stable across restarts (same id always refers to the same entity)
  * - never reused (deleted ids are never handed out again)
  *
+ * Revision contract (optimistic locking):
+ * - `rev` starts at 1 on creation and increments by 1 on every update
+ * - `update`/`remove` require the caller's expected rev; a mismatch raises
+ *   `RevisionConflictError` (HTTP: 412 Precondition Failed)
+ *
  * Concurrency contract:
  * - mutations are serialized: N concurrent `create()` calls produce N unique
  *   consecutive ids and persist every todo (no lost updates)
@@ -40,8 +60,8 @@ export class CorruptStoreError extends Error {
 export interface TodoStore {
   list(): Promise<Todo[]>;
   create(input: CreateTodo): Promise<Todo>;
-  update(id: number, input: UpdateTodo): Promise<Todo | undefined>;
-  remove(id: number): Promise<boolean>;
+  update(id: number, expectedRev: number, input: UpdateTodo): Promise<Todo | undefined>;
+  remove(id: number, expectedRev: number): Promise<boolean>;
 }
 
 /**
@@ -78,28 +98,37 @@ abstract class BaseTodoStore implements TodoStore {
   create(input: CreateTodo): Promise<Todo> {
     return this.enqueue(async () => {
       this.maxId += 1;
-      const todo: Todo = { id: this.maxId, title: input.title, done: false };
+      const todo: Todo = { id: this.maxId, title: input.title, done: false, rev: 1 };
       this.todos.push(todo);
       await this.persist();
       return { ...todo };
     });
   }
 
-  update(id: number, input: UpdateTodo): Promise<Todo | undefined> {
+  update(id: number, expectedRev: number, input: UpdateTodo): Promise<Todo | undefined> {
     return this.enqueue(async () => {
       const todo = this.todos.find((candidate) => candidate.id === id);
       if (!todo) return undefined;
+      if (todo.rev !== expectedRev) {
+        throw new RevisionConflictError(id, expectedRev, todo.rev);
+      }
       if (input.title !== undefined) todo.title = input.title;
       if (input.done !== undefined) todo.done = input.done;
+      todo.rev += 1;
       await this.persist();
       return { ...todo };
     });
   }
 
-  remove(id: number): Promise<boolean> {
+  remove(id: number, expectedRev: number): Promise<boolean> {
     return this.enqueue(async () => {
       const index = this.todos.findIndex((todo) => todo.id === id);
       if (index === -1) return false;
+      const todo = this.todos[index];
+      if (todo === undefined) return false;
+      if (todo.rev !== expectedRev) {
+        throw new RevisionConflictError(id, expectedRev, todo.rev);
+      }
       this.todos.splice(index, 1);
       await this.persist();
       return true;
@@ -127,7 +156,10 @@ interface StoreFile {
 }
 
 /** Bump (and add a migration) only when the persisted shape changes. */
-const STORE_FORMAT_VERSION = 1;
+const STORE_FORMAT_VERSION = 2;
+
+/** Previous format version: identical to v:2 except todos carry no `rev` field. */
+const LEGACY_FORMAT_VERSION = 1;
 
 /**
  * File-backed store. State survives restarts with stable ids.
@@ -165,7 +197,10 @@ export class FileTodoStore extends BaseTodoStore {
     }
 
     const { maxId, todos } = parseStoreFile(raw, filePath);
-    return new FileTodoStore(filePath, todos, maxId);
+    const store = new FileTodoStore(filePath, todos, maxId);
+    // Normalize legacy documents (v:1, no rev) to the current format on disk.
+    await store.persist();
+    return store;
   }
 
   protected async persist(): Promise<void> {
@@ -197,12 +232,12 @@ function maxIdOf(todos: readonly Todo[]): number {
 
 /** Validate a persisted document; rejects with `CorruptStoreError` on any contract violation. */
 function parseStoreFile(raw: string, filePath: string): Pick<StoreFile, 'maxId' | 'todos'> {
-  const { maxId, todos: rawTodos } = parseDocument(raw, filePath);
+  const { maxId, todos: rawTodos, legacy } = parseDocument(raw, filePath);
 
   const todos: Todo[] = [];
   const seen = new Set<number>();
   for (const entry of rawTodos) {
-    const todo = parseTodoEntry(entry, filePath);
+    const todo = parseTodoEntry(entry, filePath, legacy);
     if (seen.has(todo.id)) {
       throw new CorruptStoreError(filePath, `duplicate todo id ${todo.id}`);
     }
@@ -217,7 +252,10 @@ function parseStoreFile(raw: string, filePath: string): Pick<StoreFile, 'maxId' 
   return { maxId, todos };
 }
 
-function parseDocument(raw: string, filePath: string): { maxId: number; todos: unknown[] } {
+function parseDocument(
+  raw: string,
+  filePath: string
+): { maxId: number; todos: unknown[]; legacy: boolean } {
   let parsed: unknown;
   try {
     parsed = JSON.parse(raw);
@@ -230,7 +268,8 @@ function parseDocument(raw: string, filePath: string): { maxId: number; todos: u
   }
   const doc = parsed as { v?: unknown; maxId?: unknown; todos?: unknown };
 
-  if (doc.v !== STORE_FORMAT_VERSION) {
+  const legacy = doc.v === LEGACY_FORMAT_VERSION;
+  if (!legacy && doc.v !== STORE_FORMAT_VERSION) {
     throw new CorruptStoreError(
       filePath,
       `unsupported format version (expected v: ${STORE_FORMAT_VERSION})`
@@ -243,10 +282,10 @@ function parseDocument(raw: string, filePath: string): { maxId: number; todos: u
     throw new CorruptStoreError(filePath, 'missing todos array');
   }
 
-  return { maxId: doc.maxId, todos: doc.todos };
+  return { maxId: doc.maxId, todos: doc.todos, legacy };
 }
 
-function parseTodoEntry(entry: unknown, filePath: string): Todo {
+function parseTodoEntry(entry: unknown, filePath: string, legacy: boolean): Todo {
   if (typeof entry !== 'object' || entry === null) {
     throw new CorruptStoreError(filePath, 'todo entries must be objects');
   }
@@ -260,5 +299,12 @@ function parseTodoEntry(entry: unknown, filePath: string): Todo {
   if (typeof todo.done !== 'boolean') {
     throw new CorruptStoreError(filePath, 'todo done must be a boolean');
   }
-  return { id: todo.id, title: todo.title, done: todo.done };
+  if (legacy) {
+    // v:1 documents predate optimistic locking: every todo starts at rev 1.
+    return { id: todo.id, title: todo.title, done: todo.done, rev: 1 };
+  }
+  if (typeof todo.rev !== 'number' || !Number.isInteger(todo.rev) || todo.rev < 1) {
+    throw new CorruptStoreError(filePath, 'todo rev must be a positive integer');
+  }
+  return { id: todo.id, title: todo.title, done: todo.done, rev: todo.rev };
 }

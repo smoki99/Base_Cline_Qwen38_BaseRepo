@@ -20,12 +20,14 @@ describe('GET /api/todos', () => {
     expect(res.body.data.length).toBeGreaterThan(0);
   });
 
-  it('each todo has id, title, done', async () => {
+  it('each todo has id, title, done and rev', async () => {
     const res = await request(app).get('/api/todos');
-    const first: { id: number; title: string; done: boolean } = res.body.data[0];
+    const first: { id: number; title: string; done: boolean; rev: number } = res.body.data[0];
     expect(first).toHaveProperty('id');
     expect(first).toHaveProperty('title');
     expect(first).toHaveProperty('done');
+    expect(first).toHaveProperty('rev');
+    expect(first.rev).toBeGreaterThanOrEqual(1);
   });
 });
 
