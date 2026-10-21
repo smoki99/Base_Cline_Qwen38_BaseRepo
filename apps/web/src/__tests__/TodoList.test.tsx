@@ -4,8 +4,8 @@ import userEvent from '@testing-library/user-event';
 import TodoList from '../components/TodoList';
 
 const mockTodos = [
-  { id: 1, title: 'Learn TypeScript', done: true },
-  { id: 2, title: 'Build an API', done: false },
+  { id: 1, title: 'Learn TypeScript', done: true, rev: 1 },
+  { id: 2, title: 'Build an API', done: false, rev: 1 },
 ];
 
 function ok(body: unknown, status = 200) {
@@ -199,7 +199,7 @@ describe('TodoList', () => {
   });
 
   it('toggles a todo via PATCH and reflects the state', async () => {
-    const item = { id: 2, title: 'Build an API', done: false };
+    const item = { id: 2, title: 'Build an API', done: false, rev: 1 };
     const fetchMock = vi.fn(async (_input: unknown, init?: RequestInit) => {
       if (init?.method === 'PATCH') return ok({ data: { ...item, done: true } });
       return ok({ data: [item] });

@@ -1,6 +1,15 @@
 import { Router } from 'express';
 import type { CreateTodo, UpdateTodo } from 'shared';
+import { RevisionConflictError } from '../services/todoStore';
 import { ValidationError, type TodoService } from '../services/todoService';
+
+/** Parse the `If-Match` header into a positive integer revision (accepts quoted form). */
+function parseIfMatch(value: unknown): number | null {
+  if (typeof value !== 'string') return null;
+  const rev = Number(value.trim().replace(/^"(.*)"$/, '$1'));
+  if (!Number.isInteger(rev) || rev < 1) return null;
+  return rev;
+}
 
 /** Build the /api/todos router around an injected TodoService. */
 export function createTodoRouter(todoService: TodoService) {
@@ -30,8 +39,13 @@ export function createTodoRouter(todoService: TodoService) {
     }
   });
 
-  /** PATCH /api/todos/:id – update a todo (toggle / rename). */
+  /** PATCH /api/todos/:id – update a todo (toggle / rename). Requires `If-Match: <rev>`. */
   router.patch('/api/todos/:id', async (req, res) => {
+    const ifMatch = parseIfMatch(req.headers['if-match']);
+    if (ifMatch === null) {
+      res.status(400).json({ error: { message: 'If-Match required' } });
+      return;
+    }
     const id = Number(req.params.id);
     const body = (req.body ?? {}) as UpdateTodo;
     const hasChange = body.title !== undefined || body.done !== undefined;
@@ -40,13 +54,17 @@ export function createTodoRouter(todoService: TodoService) {
       return;
     }
     try {
-      const todo = await todoService.updateTodo(id, body);
+      const todo = await todoService.updateTodo(id, ifMatch, body);
       if (!todo) {
         res.status(404).json({ error: { message: 'Not found' } });
         return;
       }
       res.json({ data: todo });
     } catch (err) {
+      if (err instanceof RevisionConflictError) {
+        res.status(412).json({ error: { message: 'Precondition failed: version mismatch' } });
+        return;
+      }
       if (err instanceof ValidationError) {
         res.status(400).json({ error: { message: err.message } });
         return;
@@ -55,14 +73,27 @@ export function createTodoRouter(todoService: TodoService) {
     }
   });
 
-  /** DELETE /api/todos/:id – delete a todo. */
+  /** DELETE /api/todos/:id – delete a todo. Requires `If-Match: <rev>`. */
   router.delete('/api/todos/:id', async (req, res) => {
-    const id = Number(req.params.id);
-    if (!Number.isInteger(id) || !(await todoService.deleteTodo(id))) {
-      res.status(404).json({ error: { message: 'Not found' } });
+    const ifMatch = parseIfMatch(req.headers['if-match']);
+    if (ifMatch === null) {
+      res.status(400).json({ error: { message: 'If-Match required' } });
       return;
     }
-    res.status(204).send();
+    const id = Number(req.params.id);
+    try {
+      if (!Number.isInteger(id) || !(await todoService.deleteTodo(id, ifMatch))) {
+        res.status(404).json({ error: { message: 'Not found' } });
+        return;
+      }
+      res.status(204).send();
+    } catch (err) {
+      if (err instanceof RevisionConflictError) {
+        res.status(412).json({ error: { message: 'Precondition failed: version mismatch' } });
+        return;
+      }
+      throw err;
+    }
   });
 
   return router;

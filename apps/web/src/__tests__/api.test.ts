@@ -20,8 +20,8 @@ afterEach(() => {
 describe('fetchTodos', () => {
   it('returns the todo array on success', async () => {
     const todos = [
-      { id: 1, title: 'A', done: false },
-      { id: 2, title: 'B', done: true },
+      { id: 1, title: 'A', done: false, rev: 1 },
+      { id: 2, title: 'B', done: true, rev: 2 },
     ];
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(ok({ data: todos })));
 
@@ -52,7 +52,7 @@ describe('fetchTodos', () => {
 
 describe('addTodo', () => {
   it('sends a POST with the title and returns the created todo', async () => {
-    const created = { id: 3, title: 'New', done: false };
+    const created = { id: 3, title: 'New', done: false, rev: 1 };
     const fetchMock = vi.fn().mockResolvedValue(ok({ data: created }, 201));
     vi.stubGlobal('fetch', fetchMock);
 
@@ -89,19 +89,19 @@ describe('addTodo', () => {
 });
 
 describe('updateTodo', () => {
-  it('sends a PATCH with the payload and returns the updated todo', async () => {
-    const updated = { id: 1, title: 'A', done: true };
+  it('sends a PATCH with the payload and If-Match, returns the updated todo', async () => {
+    const updated = { id: 1, title: 'A', done: true, rev: 2 };
     const fetchMock = vi.fn().mockResolvedValue(ok({ data: updated }));
     vi.stubGlobal('fetch', fetchMock);
 
-    const result = await updateTodo(1, { done: true });
+    const result = await updateTodo(1, 1, { done: true });
 
     expect(result).toEqual(updated);
     expect(fetchMock).toHaveBeenCalledWith(
       '/api/todos/1',
       expect.objectContaining({
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'If-Match': '1' },
         body: JSON.stringify({ done: true }),
       })
     );
@@ -115,7 +115,7 @@ describe('updateTodo', () => {
         .mockResolvedValue(error({ error: { message: 'Done muss ein boolean Wert sein.' } }, 400))
     );
 
-    await expect(updateTodo(1, { done: 'yes' as unknown as boolean })).rejects.toThrow(
+    await expect(updateTodo(1, 1, { done: 'yes' as unknown as boolean })).rejects.toThrow(
       'Done muss ein boolean Wert sein.'
     );
   });
@@ -126,29 +126,64 @@ describe('updateTodo', () => {
       vi.fn().mockResolvedValue(error({ error: { message: 'Not found' } }, 404))
     );
 
-    await expect(updateTodo(999, { done: true })).rejects.toThrow('Not found');
+    await expect(updateTodo(999, 1, { done: true })).rejects.toThrow('Not found');
+  });
+
+  it('throws a ConflictError with the server message on 412 (stale rev)', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValue(
+          error({ error: { message: 'Precondition failed: version mismatch' } }, 412)
+        )
+    );
+
+    await expect(updateTodo(1, 1, { done: true })).rejects.toMatchObject({
+      name: 'ConflictError',
+      message: 'Precondition failed: version mismatch',
+    });
   });
 });
 
 describe('deleteTodo', () => {
-  it('sends a DELETE and resolves on 204', async () => {
+  it('sends a DELETE with If-Match and resolves on 204', async () => {
     const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 204 });
     vi.stubGlobal('fetch', fetchMock);
 
-    await expect(deleteTodo(1)).resolves.toBeUndefined();
+    await expect(deleteTodo(1, 3)).resolves.toBeUndefined();
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/todos/1', { method: 'DELETE' });
+    expect(fetchMock).toHaveBeenCalledWith('/api/todos/1', {
+      method: 'DELETE',
+      headers: { 'If-Match': '3' },
+    });
   });
 
   it('throws a status-based error on 404', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 404 }));
 
-    await expect(deleteTodo(999)).rejects.toThrow('Request failed with status 404');
+    await expect(deleteTodo(999, 1)).rejects.toThrow('Request failed with status 404');
   });
 
   it('throws a status-based error on 500', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500 }));
 
-    await expect(deleteTodo(1)).rejects.toThrow('Request failed with status 500');
+    await expect(deleteTodo(1, 1)).rejects.toThrow('Request failed with status 500');
+  });
+
+  it('throws a ConflictError with the server message on 412 (stale rev)', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValue(
+          error({ error: { message: 'Precondition failed: version mismatch' } }, 412)
+        )
+    );
+
+    await expect(deleteTodo(1, 1)).rejects.toMatchObject({
+      name: 'ConflictError',
+      message: 'Precondition failed: version mismatch',
+    });
   });
 });

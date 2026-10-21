@@ -27,7 +27,7 @@ export class TodoService {
     return this.store.create({ title: input.title.trim() });
   }
 
-  async updateTodo(id: number, input: UpdateTodo): Promise<Todo | undefined> {
+  async updateTodo(id: number, expectedRev: number, input: UpdateTodo): Promise<Todo | undefined> {
     // Validate all fields before any mutation (all-or-nothing)
     if (input.title !== undefined) {
       if (typeof input.title !== 'string' || input.title.trim() === '') {
@@ -41,10 +41,10 @@ export class TodoService {
     const patch: UpdateTodo = {};
     if (input.title !== undefined) patch.title = input.title.trim();
     if (input.done !== undefined) patch.done = input.done;
-    return this.store.update(id, patch);
+    return this.store.update(id, expectedRev, patch);
   }
 
-  async deleteTodo(id: number): Promise<boolean> {
-    return this.store.remove(id);
+  async deleteTodo(id: number, expectedRev: number): Promise<boolean> {
+    return this.store.remove(id, expectedRev);
   }
 }
