@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import request from 'supertest';
-import app from '../app';
+import { createTestApp } from './helpers';
+
+const app = createTestApp();
 
 describe('Security headers (helmet)', () => {
   it('responds with X-Content-Type-Options: nosniff on GET /health', async () => {

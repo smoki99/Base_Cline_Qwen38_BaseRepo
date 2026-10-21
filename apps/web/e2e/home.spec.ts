@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 
-// Seeded todos in apps/api/src/services/todoService.ts
+// Seeded todos (3) – defined in apps/api/src/services/todoStore.ts.
+// The E2E API runs against an isolated, freshly seeded data file
+// (e2e/global-setup.ts + playwright.config.ts), so the count is deterministic.
 const seedCount = 3;
 
 test.describe('Baseline – home page', () => {

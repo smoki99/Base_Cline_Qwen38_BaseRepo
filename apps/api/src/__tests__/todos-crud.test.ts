@@ -1,6 +1,8 @@
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
-import app from '../app';
+import { createTestApp } from './helpers';
+
+const app = createTestApp();
 
 function json<T = unknown>(res: request.Response): T {
   return res.body as T;

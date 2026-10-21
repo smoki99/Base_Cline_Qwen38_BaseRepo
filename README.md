@@ -85,12 +85,13 @@ Danach:
 
 ### Environment-Variablen
 
-| Variable       | Beschreibung                                                                 | Default                                 |
-| -------------- | ---------------------------------------------------------------------------- | --------------------------------------- |
-| `PORT`         | API-Port                                                                     | `4001`                                  |
-| `HOST`         | API-Bind-Adresse (Default loopback-only)                                     | `127.0.0.1`                             |
-| `CORS_ORIGIN`  | Erlaubte CORS-Origin(s) für die API (prod), kommagetrennt                    | leer (dev: alle, prod: fail-closed)     |
-| `VITE_API_URL` | **Optionale Override** – API-Basis-URL für das Web, falls API woanders liegt | – (per Default relative `/api/*`-Pfade) |
+| Variable         | Beschreibung                                                                 | Default                                         |
+| ---------------- | ---------------------------------------------------------------------------- | ----------------------------------------------- |
+| `PORT`           | API-Port                                                                     | `4001`                                          |
+| `HOST`           | API-Bind-Adresse (Default loopback-only)                                     | `127.0.0.1`                                     |
+| `CORS_ORIGIN`    | Erlaubte CORS-Origin(s) für die API (prod), kommagetrennt                    | leer (dev: alle, prod: fail-closed)             |
+| `TODO_DATA_FILE` | Pfad der persistenten Todo-Daten-Datei (API)                                 | `apps/api/data/todos.json` (Seed bei Erststart) |
+| `VITE_API_URL`   | **Optionale Override** – API-Basis-URL für das Web, falls API woanders liegt | – (per Default relative `/api/*`-Pfade)         |
 
 > Die Web-App nutzt per Default **relative** `/api/*`-Pfade:
 > in der Entwicklung übernimmt der **Vite-Proxy** (`/api` → `localhost:4001`),

@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import request from 'supertest';
-import app from '../app';
+import { createTestApp } from './helpers';
+
+const app = createTestApp();
 
 describe('GET /health', () => {
   it('returns 200 with status ok', async () => {

@@ -2,7 +2,9 @@
   "ignoreBinaries": ["pkill"],
   "workspaces": {
     "apps/api": {},
-    "apps/web": {},
+    "apps/web": {
+      "entry": ["e2e/global-setup.ts"]
+    },
     "packages/shared": {}
   }
 }

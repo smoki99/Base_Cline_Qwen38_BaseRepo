@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import request from 'supertest';
-import app from '../app';
+import { createTestApp } from './helpers';
+
+const app = createTestApp();
 
 const ALLOWED = 'http://allowed.test';
 
