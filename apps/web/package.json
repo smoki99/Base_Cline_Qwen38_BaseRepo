@@ -19,7 +19,7 @@
     "shared": "1.0.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1",
+    "@playwright/test": "1.64.1",
     "@testing-library/jest-dom": "^7",
     "@testing-library/react": "^16",
     "@testing-library/user-event": "^14.6.7",
